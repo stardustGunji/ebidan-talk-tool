@@ -6,7 +6,10 @@
 <title>座談会 → 吹き出しHTML 自動生成ツール</title>
 
 <style>
-body{font-family:sans-serif;margin:40px;}
+body{
+font-family:sans-serif;
+margin:40px;
+}
 
 textarea{
 width:100%;
@@ -20,6 +23,7 @@ button{
 padding:10px 20px;
 font-size:14px;
 cursor:pointer;
+margin-right:10px;
 margin-bottom:20px;
 }
 
@@ -113,7 +117,7 @@ font-weight:bold
 <p>形式： 名前：発言</p>
 <textarea id="input"></textarea>
 
-<button onclick="convert()">HTML生成</button>
+<button onclick="convert()">HTML生成</button> <button onclick="copyHTML()">HTMLコピー</button>
 
 <h3>生成HTML</h3>
 <pre id="output"></pre>
@@ -135,12 +139,12 @@ loadMembers();
 const STAFF_IMG =
 "https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png";
 
+
 function findMember(name){
 
  const clean = name.replace(/\s/g,"");
  const upper = clean.toUpperCase();
 
- // STAFF
  if(upper === "STAFF"){
    return {
      img: STAFF_IMG,
@@ -148,7 +152,6 @@ function findMember(name){
    };
  }
 
- // 一同
  if(clean === "一同"){
    return {
      img: STAFF_IMG,
@@ -164,6 +167,7 @@ function findMember(name){
 
  return null;
 }
+
 
 function convert(){
 
@@ -252,6 +256,18 @@ function convert(){
  document.getElementById("output").textContent = html;
 
  document.getElementById("preview").innerHTML = html;
+
+}
+
+
+function copyHTML(){
+
+ const text =
+ document.getElementById("output").textContent;
+
+ navigator.clipboard.writeText(text);
+
+ alert("HTMLをコピーしました");
 
 }
 
