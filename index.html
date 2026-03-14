@@ -54,6 +54,9 @@ async function loadMembers(){
 
 loadMembers();
 
+const STAFF_IMG = "https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png";
+
+
 function findMember(name){
 
  const clean = name.replace(/\s/g,"");
@@ -62,16 +65,18 @@ function findMember(name){
  // STAFF
  if(upper === "STAFF"){
    return {
-     img:"https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png",
-     team:"STAFF"
+     img: STAFF_IMG,
+     team: "STAFF",
+     special: true
    };
  }
 
  // 一同
  if(clean === "一同"){
    return {
-     img:"https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png",
-     team:"ALL"
+     img: STAFF_IMG,
+     team: "ALL",
+     special: true
    };
  }
 
@@ -83,6 +88,7 @@ function findMember(name){
 
  return null;
 }
+
 
 function convert(){
 
@@ -101,7 +107,6 @@ function convert(){
   const clean = name.replace(/\s/g,"");
   const upper = clean.toUpperCase();
 
-  // STAFFと一同は一覧に出さない
   if(upper === "STAFF" || clean === "一同") return;
 
   const data = findMember(name);
@@ -139,19 +144,16 @@ function convert(){
   const name = parts[0].trim();
   const speech = parts.slice(1).join("：").trim();
 
-  const clean = name.replace(/\s/g,"");
-  const upper = clean.toUpperCase();
-
   const data = findMember(name);
 
-  if(!data && upper !== "STAFF" && clean !== "一同"){
+  if(!data){
     errors.push("メンバーDBに存在しません: " + name);
     return;
   }
 
   let side = "l";
 
-  if(upper === "STAFF"){
+  if(name.replace(/\s/g,"").toUpperCase() === "STAFF"){
     side = "r";
   }
 
@@ -177,6 +179,7 @@ function convert(){
 }
 
 </script>
+
 
 </body>
 </html>
