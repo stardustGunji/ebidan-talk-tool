@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
@@ -25,6 +26,7 @@ pre{background:#f5f5f5;padding:20px;border:1px solid #ddd;white-space:pre-wrap;}
 .member-profile .team{font-size:12px;color:#777}
 .member-profile .name{font-weight:bold}
 </style>
+
 </head>
 
 <body>
@@ -47,7 +49,7 @@ let MEMBER_DB = {};
 
 // メンバーDB読み込み
 async function loadMembers(){
- const res = await fetch("members.json");
+ const res = await fetch("./members.json");
  MEMBER_DB = await res.json();
  console.log("members loaded", MEMBER_DB);
 }
@@ -55,23 +57,32 @@ async function loadMembers(){
 loadMembers();
 
 
-// 名前部分一致検索
+// 名前検索
 function findMember(name){
 
- for(const key in MEMBER_DB){
+ // S（スタッフ）は固定
+ if(name === "S"){
+   return {
+     img:"https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png",
+     team:"STAFF"
+   };
+ }
 
+ for(const key in MEMBER_DB){
    if(name.includes(key) || key.includes(name)){
      return MEMBER_DB[key];
    }
-
  }
 
  return null;
 }
 
 
+
 // HTML生成
 function convert(){
+
+ const errors = [];
 
  const memberLines = document
    .getElementById("members")
@@ -83,11 +94,18 @@ function convert(){
  memberLines.forEach(line=>{
 
   const name = line.trim();
+
   if(!name) return;
+
+  // Sはメンバー一覧に出さない
+  if(name === "S") return;
 
   const data = findMember(name);
 
-  if(!data) return;
+  if(!data){
+    errors.push("参加メンバーに存在しません: " + name);
+    return;
+  }
 
   html += `
 <div class="member-profile">
@@ -109,15 +127,22 @@ function convert(){
 
   if(!line.trim()) return;
 
-  const parts = line.split("：");
-  if(parts.length < 2) return;
+  const parts = line.split(/[:：]/);
+
+  if(parts.length < 2){
+    errors.push("発言形式エラー: " + line);
+    return;
+  }
 
   const name = parts[0].trim();
   const speech = parts.slice(1).join("：").trim();
 
   const data = findMember(name);
 
-  if(!data) return;
+  if(!data){
+    errors.push("メンバーDBに存在しません: " + name);
+    return;
+  }
 
   const side = name === "S" ? "r" : "l";
 
@@ -134,7 +159,12 @@ function convert(){
 
  html += `</section>`;
 
+ if(errors.length > 0){
+   alert(errors.join("\n"));
+ }
+
  document.getElementById("output").textContent = html;
+
 }
 
 </script>
