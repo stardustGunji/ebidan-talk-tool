@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>座談会 → 吹き出しHTML 自動生成ツール</title>
+
+<style>
+body{font-family:sans-serif;margin:40px;}
+textarea{width:100%;height:180px;margin-bottom:20px;font-size:14px;padding:10px;}
+button{padding:10px 20px;font-size:14px;cursor:pointer;margin-bottom:20px;}
+pre{background:#f5f5f5;padding:20px;border:1px solid #ddd;white-space:pre-wrap;}
+
+.balloon_l,.balloon_r{margin:30px 0;display:flex;align-items:flex-start}
+.balloon_r{flex-direction:row-reverse}
+
+.faceicon{display:flex;flex-direction:column;align-items:center;margin:0 15px}
+.faceicon img{width:70px;height:70px;border-radius:50%;object-fit:cover}
+.name{font-size:12px;color:#555;margin-top:5px}
+
+.says{max-width:480px;background:#e8f5e9;padding:14px 16px;border-radius:12px;line-height:1.5}
+.balloon_r .says{background:#eceff1}
+
+.member-profile{display:inline-block;margin:10px;text-align:center}
+.member-profile img{width:70px;height:70px;border-radius:50%;object-fit:cover}
+.member-profile .team{font-size:12px;color:#777}
+.member-profile .name{font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<h2>① 参加メンバー（名前だけ入力）</h2>
+<textarea id="members"></textarea>
+
+<h2>② 座談会テキスト</h2>
+<p>形式： 名前：発言</p>
+<textarea id="input"></textarea>
+
+<button onclick="convert()">HTML生成</button>
+
+<h3>生成HTML</h3>
+<pre id="output"></pre>
+
+<script>
+
+let MEMBER_DB = {};
+
+// メンバーDB読み込み
+async function loadMembers(){
+ const res = await fetch("members.json");
+ MEMBER_DB = await res.json();
+ console.log("members loaded", MEMBER_DB);
+}
+
+loadMembers();
+
+
+// 名前部分一致検索
+function findMember(name){
+
+ for(const key in MEMBER_DB){
+
+   if(name.includes(key) || key.includes(name)){
+     return MEMBER_DB[key];
+   }
+
+ }
+
+ return null;
+}
+
+
+// HTML生成
+function convert(){
+
+ const memberLines = document
+   .getElementById("members")
+   .value
+   .split(/\r?\n/);
+
+ let html = `<h3>今回の参加メンバー</h3><div>`;
+
+ memberLines.forEach(line=>{
+
+  const name = line.trim();
+  if(!name) return;
+
+  const data = findMember(name);
+
+  if(!data) return;
+
+  html += `
+<div class="member-profile">
+ <img src="${data.img}">
+ <div class="team">${data.team}</div>
+ <div class="name">${name}</div>
+</div>`;
+
+ });
+
+ html += `</div><section class="conversation-log">`;
+
+ const lines = document
+   .getElementById("input")
+   .value
+   .split(/\r?\n/);
+
+ lines.forEach(line=>{
+
+  if(!line.trim()) return;
+
+  const parts = line.split("：");
+  if(parts.length < 2) return;
+
+  const name = parts[0].trim();
+  const speech = parts.slice(1).join("：").trim();
+
+  const data = findMember(name);
+
+  if(!data) return;
+
+  const side = name === "S" ? "r" : "l";
+
+  html += `
+<div class="balloon_${side}">
+ <div class="faceicon">
+   <img src="${data.img}">
+   <span class="name">${name}</span>
+ </div>
+ <div class="says"><p>${speech}</p></div>
+</div>`;
+
+ });
+
+ html += `</section>`;
+
+ document.getElementById("output").textContent = html;
+}
+
+</script>
+
+</body>
+</html>
