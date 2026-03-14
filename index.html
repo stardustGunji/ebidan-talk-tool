@@ -98,7 +98,11 @@ function convert(){
   const name = line.trim();
   if(!name) return;
 
-  if(name === "STAFF" || name === "一同") return;
+  const clean = name.replace(/\s/g,"");
+  const upper = clean.toUpperCase();
+
+  // STAFFと一同は一覧に出さない
+  if(upper === "STAFF" || clean === "一同") return;
 
   const data = findMember(name);
 
@@ -132,19 +136,22 @@ function convert(){
     return;
   }
 
-  const name = parts[0].trim().replace(/\s/g,"");
+  const name = parts[0].trim();
   const speech = parts.slice(1).join("：").trim();
+
+  const clean = name.replace(/\s/g,"");
+  const upper = clean.toUpperCase();
 
   const data = findMember(name);
 
-  if(!data){
+  if(!data && upper !== "STAFF" && clean !== "一同"){
     errors.push("メンバーDBに存在しません: " + name);
     return;
   }
 
   let side = "l";
 
-  if(name.toUpperCase() === "STAFF"){
+  if(upper === "STAFF"){
     side = "r";
   }
 
