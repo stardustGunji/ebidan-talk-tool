@@ -47,29 +47,36 @@ pre{background:#f5f5f5;padding:20px;border:1px solid #ddd;white-space:pre-wrap;}
 
 let MEMBER_DB = {};
 
-// メンバーDB読み込み
 async function loadMembers(){
  const res = await fetch("./members.json");
  MEMBER_DB = await res.json();
- console.log("members loaded", MEMBER_DB);
 }
 
 loadMembers();
 
-
-// 名前検索
 function findMember(name){
 
- // S（スタッフ）は固定
- if(name === "S"){
+ const clean = name.replace(/\s/g,"");
+ const upper = clean.toUpperCase();
+
+ // STAFF
+ if(upper === "STAFF"){
    return {
      img:"https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png",
      team:"STAFF"
    };
  }
 
+ // 一同
+ if(clean === "一同"){
+   return {
+     img:"https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png",
+     team:"ALL"
+   };
+ }
+
  for(const key in MEMBER_DB){
-   if(name.includes(key) || key.includes(name)){
+   if(clean.includes(key) || key.includes(clean)){
      return MEMBER_DB[key];
    }
  }
@@ -77,28 +84,21 @@ function findMember(name){
  return null;
 }
 
-
-
-// HTML生成
 function convert(){
 
  const errors = [];
 
- const memberLines = document
-   .getElementById("members")
-   .value
-   .split(/\r?\n/);
+ const memberLines =
+ document.getElementById("members").value.split(/\r?\n/);
 
  let html = `<h3>今回の参加メンバー</h3><div>`;
 
  memberLines.forEach(line=>{
 
   const name = line.trim();
-
   if(!name) return;
 
-  // Sはメンバー一覧に出さない
-  if(name === "S") return;
+  if(name === "STAFF" || name === "一同") return;
 
   const data = findMember(name);
 
@@ -118,10 +118,8 @@ function convert(){
 
  html += `</div><section class="conversation-log">`;
 
- const lines = document
-   .getElementById("input")
-   .value
-   .split(/\r?\n/);
+ const lines =
+ document.getElementById("input").value.split(/\r?\n/);
 
  lines.forEach(line=>{
 
@@ -134,7 +132,7 @@ function convert(){
     return;
   }
 
-  const name = parts[0].trim();
+  const name = parts[0].trim().replace(/\s/g,"");
   const speech = parts.slice(1).join("：").trim();
 
   const data = findMember(name);
@@ -144,7 +142,11 @@ function convert(){
     return;
   }
 
-  const side = name === "S" ? "r" : "l";
+  let side = "l";
+
+  if(name.toUpperCase() === "STAFF"){
+    side = "r";
+  }
 
   html += `
 <div class="balloon_${side}">
