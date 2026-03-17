@@ -275,7 +275,15 @@ function copyHTML(){
  alert("HTMLをコピーしました");
 
 }
-
+ 
+function normalize(str){
+  return str
+    .replace(/\s/g,"")              // スペース削除
+    .toLowerCase()
+    .replace(/[ァ-ン]/g, s =>       // カタカナ→ひらがな
+      String.fromCharCode(s.charCodeAt(0) - 0x60)
+    );
+}
 </script>
 
 </body>
