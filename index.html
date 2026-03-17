@@ -142,32 +142,31 @@ const STAFF_IMG =
 
 function findMember(name){
 
- const clean = name.replace(/\s/g,"");
- const upper = clean.toUpperCase();
+  const clean = normalize(name);
 
- if(upper === "STAFF"){
-   return {
-     img: STAFF_IMG,
-     team:"STAFF"
-   };
- }
+  // 特例
+  if(clean === "staff"){
+    return {
+      img: STAFF_IMG,
+      team:"STAFF"
+    };
+  }
 
- if(clean === "一同"){
-   return {
-     img: STAFF_IMG,
-     team:"ALL"
-   };
- }
+  if(clean === normalize("一同")){
+    return {
+      img: STAFF_IMG,
+      team:"ALL"
+    };
+  }
 
- for(const key in MEMBER_DB){
-   if(clean.includes(key) || key.includes(clean)){
-     return MEMBER_DB[key];
-   }
- }
+  for(const key in MEMBER_DB){
+    if(normalize(key) === clean){
+      return MEMBER_DB[key];
+    }
+  }
 
- return null;
+  return null;
 }
-
 
 function convert(){
 
