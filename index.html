@@ -222,13 +222,18 @@ function convert(){
 
   const name = parts[0].trim();
   const speech = parts.slice(1).join("：").trim();
+const clean = name.replace(/\s/g,"");
+const upper = clean.toUpperCase();
 
-  const data = findMember(name);
+const data = findMember(name);
 
-  if(!data){
-    errors.push("メンバーDBに存在しません: " + name);
-    return;
-  }
+const isStaff = upper === "STAFF";
+const isAll   = clean === "一同";
+
+if(!data && !isStaff && !isAll){
+  errors.push("メンバーDBに存在しません: " + name);
+  return;
+}
 
   let side = "l";
 
