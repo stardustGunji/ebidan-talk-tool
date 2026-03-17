@@ -285,5 +285,178 @@ function normalize(str){
 }
 </script>
 
+
+<p>
+ 
+<style type="text/css">/* 共通の吹き出しスタイル */
+            .balloon_l, .balloon_r {
+                margin: 30px 0;
+                display: flex;
+                justify-content: flex-start; /* デフォルトは左寄せ */
+                align-items: flex-start;
+            }
+            /* 右寄せの場合 */
+            .balloon_r {
+                justify-content: flex-end;
+            }
+    
+            /* 顔アイコンと名前のコンテナ */
+            .faceicon {
+                display: flex;
+                flex-direction: column; /* アイコンと名前を縦に並べる */
+                align-items: center; /* アイコンと名前を中央揃え */
+            }
+    
+            /* 顔アイコン画像の共通スタイル */
+            /* 会話ログ部分のアイコンは正円 */
+            .conversation-log .faceicon img { /* conversation-logクラス内のfaceicon imgに限定 */
+                width: 80px;
+                height: 80px;
+                min-width: 80px;
+                max-width: 80px;
+                min-height: 80px;
+                max-height: 80px;
+                object-fit: cover; /* 正円にするためのトリミング */
+                border-radius: 50%; /* 正円にする */
+                margin-bottom: -1px; /* アイコンと名前の間の余白 */
+            }
+    
+            /* アイコンの下の名前のスタイル */
+            .faceicon .name {
+                font-size: 0.8em;
+                color: #555;
+                text-align: center;
+                white-space: nowrap;
+            }
+    
+            /* プロフィール一覧のメンバー名用スタイル */
+            .Profilename {
+                font-size: 1em;
+                color: #333;
+                margin-top: 0px;
+            }
+            /* プロフィール一覧の所属名用スタイル */
+            .Profafliliation {
+                font-size: 0.8em; /* 所属のフォントサイズ */
+                color: #666; /* 所属の文字色 */
+                margin-bottom: 2px; /* 所属と名前の間の余白 */
+                text-align: center;
+            }
+    
+            /* 枠線の色定義 */
+            .border-red img { border: 4px solid #E57373; } /* 赤系 */
+            .border-green img { border: 4px solid #81C784; } /* 緑系 */
+            .border-yellow img { border: 4px solid #FFEB3B; } /* 黄色 */
+            .border-gray img { border: 4px solid #757575; } /* 濃い目のグレー */
+            .border-purple img { border: 4px solid #9C27B0; } /* 紫系 */
+            .border-blue img { border: 4px solid #64B5F6; } /* 青系 (スタッフ用など) */
+            .border-sky img { border: 4px solid #72bde9; } /* BATTLE BOYS SKY */
+    .border-pink img { border: 4px solid #ff6fb1; } /* NF4 */
+    .border-black img { border: 4px solid black; } /* STAFF */
+    
+            /* アイコンと吹き出しの余白 */
+            .balloon_r .faceicon {
+                margin-left: 25px;
+                order: 2 !important; /* 右寄せの時にアイコンを右に */
+            }
+            .balloon_l .faceicon {
+                margin-right: 25px;
+            }
+    
+            /* 吹き出しの背景色 */
+            .says {
+                max-width: 500px;
+                display: flex;
+                flex-wrap: wrap;
+                position: relative;
+                padding: 17px 13px 15px 18px;
+                border-radius: 12px;
+                background: #A8E6CF; /* 左寄せ吹き出しのデフォルト色（パステルグリーン） */
+                box-sizing: border-box;
+                margin: 0 !important;
+                line-height: 1.5;
+            }
+            /* 右寄せ吹き出しの色（薄めのグレー） */
+            .balloon_r .says {
+                background: #E0E0E0;
+            }
+    
+            /* 吹き出しの「しっぽ」 */
+            .says:after {
+                content: "";
+                position: absolute;
+                border: 10px solid transparent;
+            }
+            .balloon_l .says:after {
+                left: -26px;
+                border-right: 22px solid #A8E6CF; /* パステルグリーン */
+            }
+            .balloon_r .says:after {
+                right: -26px;
+                border-left: 22px solid #E0E0E0; /* 薄めのグレー */
+            }
+    
+            /* --- メンバープロフィール表示用のCSS --- */
+            .member-profiles-container {
+                display: flex; /* Flexboxを適用して子要素を横並びに */
+                flex-wrap: wrap; /* 画面幅が足りない場合は折り返す */
+                justify-content: center; /* 横方向の中央揃え */
+                gap: 30px; /* 各プロフィール間の隙間 */
+                margin: 50px auto; /* 上下の余白と中央寄せ */
+                max-width: 960px; /* 必要に応じて最大幅を設定 */
+            }
+    
+            .member-profile {
+                display: flex;
+                flex-direction: column; /* 所属、アイコン、名前を縦に並べる */
+                align-items: center; /* 要素の中央揃え */
+                width: 120px; /* 各プロフィールブロックの幅（アイコン+余白を考慮） */
+                text-align: center;
+            }
+    
+            /* プロフィール一覧の画像スタイル (円形トリミング中止) */
+            .member-profile .faceicon img { /* member-profile内のfaceicon imgに限定 */
+                width: 80px;
+                height: auto; /* 高さは自動調整（元の縦横比を維持） */
+                border-radius: 0; /* 角丸をなくす、または任意の数値に設定 */
+                margin-bottom: 5px;
+            }
+    
+            /* SPでの表示調整 */
+            @media (max-width: 768px) {
+                .member-profiles-container {
+                    flex-direction: row;
+                    justify-content: space-around;
+                    gap: 15px;
+                }
+                .member-profile {
+                    width: 30%;
+                    min-width: 100px;
+                    max-width: 150px;
+                }
+                .member-profile .faceicon img { /* SPでのプロフィールアイコンサイズも調整 */
+                    width: 60px;
+                    height: auto;
+                    min-width: unset;
+                    max-width: unset;
+                    min-height: unset;
+                    max-height: unset;
+                }
+                .faceicon .name {
+                    font-size: 0.75em;
+                }
+            }
+            @media (max-width: 480px) {
+                .member-profile {
+                    width: 45%;
+                }
+            }
+</style>
+
+
+</p>
+ 
+
+ 
 </body>
 </html>
