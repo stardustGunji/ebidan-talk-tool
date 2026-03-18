@@ -2,121 +2,89 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>投稿リスト抽出</title>
+    <title>Post List - Simple View</title>
     <style>
         body {
-            font-family: sans-serif;
-            line-height: 1.6;
-            background-color: #f9f9f9;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+            background-color: #f4f7f6;
             padding: 20px;
             color: #333;
         }
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .post-card {
             background: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-            font-size: 0.9rem;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid #007bff;
         }
         .date-time {
-            white-space: nowrap;
             font-size: 0.85rem;
             color: #666;
+            margin-bottom: 5px;
         }
         .post-title {
+            font-size: 1.2rem;
             font-weight: bold;
-            color: #222;
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
         .post-link a {
-            color: #0066c0;
+            color: #007bff;
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             word-break: break-all;
         }
         .post-link a:hover {
             text-decoration: underline;
         }
+        /* 元データは非表示にする */
+        #raw-data {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>抽出済み投稿リスト</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>公開日時</th>
-                <th>タイトル</th>
-                <th>リンク</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="date-time">2026/03/06 17:00 〜</td>
-                <td class="post-title">EBiDAN ACTORS 舞台「青渋 ―AOSHIBU―」開催(4月4日-5日)</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1053625" target="_blank">https://ebidan.com/contents/1053625</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2026/02/25 20:00 〜</td>
-                <td class="post-title">EBiDAN ACTORS 公演/舞台「青渋 ―AOSHIBU―」　開催決定！</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1048702" target="_blank">https://ebidan.com/contents/1048702</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2026/02/22 12:00 〜</td>
-                <td class="post-title">EBiDAN ACTORS 公演/舞台「青渋 ―AOSHIBU―」　FC先行チケットページ</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1048595" target="_blank">https://ebidan.com/contents/1048595</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2026/02/21 23:55 〜</td>
-                <td class="post-title">【東京】2/22(日)「EBiDAN ACTORS 作戦会議 第17弾」開催決定！in HMV&BOOKS SHIBUYA</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1049077" target="_blank">https://ebidan.com/contents/1049077</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2026/01/30 19:00 〜</td>
-                <td class="post-title">推しチョコ大作戦2026 中間発表！</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1045822" target="_blank">https://ebidan.com/contents/1045822</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2026/01/24 23:00 〜</td>
-                <td class="post-title">【東京】1/25(日)「EBiDAN ACTORS 作戦会議 第1６弾」開催決定！in HMV&BOOKS SHIBUYA</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1039855" target="_blank">https://ebidan.com/contents/1039855</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2026/01/01 00:00 〜</td>
-                <td class="post-title">EBiDAN NEXT おみくじ抽選会2026開催！</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1029993" target="_blank">https://ebidan.com/contents/1029993</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2025/12/20 16:23 〜</td>
-                <td class="post-title">【東京】12/21(日)「EBiDAN ACTORS 作戦会議 第15弾」開催決定！in HMV&BOOKS SHIBUYA</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1025898" target="_blank">https://ebidan.com/contents/1025898</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2025/11/29 02:39 〜</td>
-                <td class="post-title">【東京】11/30(日)「EBiDAN ACTORS 作戦会議 第14弾」開催決定！in HMV&BOOKS SHIBUYA</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/1015362" target="_blank">https://ebidan.com/contents/1015362</a></td>
-            </tr>
-            <tr>
-                <td class="date-time">2025/10/25 22:55 〜</td>
-                <td class="post-title">【東京】10/26(日)「EBiDAN ACTORS 作戦会議 第13弾」開催決定！in HMV&BOOKS SHIBUYA</td>
-                <td class="post-link"><a href="https://ebidan.com/contents/994362" target="_blank">https://ebidan.com/contents/994362</a></td>
-            </tr>
-        </tbody>
-    </table>
+<div class="container" id="display-area">
+    </div>
+
+<div id="raw-data">
+    <div class="list-group">
+        </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const rawData = document.getElementById('raw-data');
+        const displayArea = document.getElementById('display-area');
+        const items = rawData.querySelectorAll('.list-group-item');
+
+        items.forEach(item => {
+            // データの抽出
+            const dateTime = item.querySelector('.date-time').textContent.trim();
+            const title = item.querySelector('.post-title').textContent.trim();
+            const linkTag = item.querySelector('.post-link a');
+            const linkHref = linkTag ? linkTag.getAttribute('href') : '#';
+
+            // 新しいHTML要素の作成
+            const card = document.createElement('div');
+            card.className = 'post-card';
+
+            card.innerHTML = `
+                <div class="date-time">📅 ${dateTime}</div>
+                <div class="post-title">${title}</div>
+                <div class="post-link"><a href="${linkHref}" target="_blank">${linkHref}</a></div>
+            `;
+
+            displayArea.appendChild(card);
+        });
+    });
+</script>
 
 </body>
 </html>
