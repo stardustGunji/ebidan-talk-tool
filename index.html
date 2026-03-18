@@ -1,304 +1,138 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>座談会 → 吹き出しHTML 自動生成ツール</title>
-
-<style>
-body{
-font-family:sans-serif;
-margin:40px;
-}
-
-textarea{
-width:100%;
-height:180px;
-margin-bottom:20px;
-font-size:14px;
-padding:10px;
-}
-
-button{
-padding:10px 20px;
-font-size:14px;
-cursor:pointer;
-margin-right:10px;
-margin-bottom:20px;
-}
-
-pre{
-background:#f5f5f5;
-padding:20px;
-border:1px solid #ddd;
-white-space:pre-wrap;
-}
-
-#preview{
-border:1px solid #ddd;
-padding:20px;
-margin-top:10px;
-background:#fafafa;
-}
-
-.balloon_l,.balloon_r{
-margin:30px 0;
-display:flex;
-align-items:flex-start
-}
-
-.balloon_r{
-flex-direction:row-reverse
-}
-
-.faceicon{
-display:flex;
-flex-direction:column;
-align-items:center;
-margin:0 15px
-}
-
-.faceicon img{
-width:70px;
-height:70px;
-border-radius:50%;
-object-fit:cover
-}
-
-.name{
-font-size:12px;
-color:#555;
-margin-top:5px
-}
-
-.says{
-max-width:480px;
-background:#e8f5e9;
-padding:14px 16px;
-border-radius:12px;
-line-height:1.5
-}
-
-.balloon_r .says{
-background:#eceff1
-}
-
-.member-profile{
-display:inline-block;
-margin:10px;
-text-align:center
-}
-
-.member-profile img{
-width:70px;
-height:70px;
-border-radius:50%;
-object-fit:cover
-}
-
-.member-profile .team{
-font-size:12px;
-color:#777
-}
-
-.member-profile .name{
-font-weight:bold
-}
-</style>
-
+    <meta charset="UTF-8">
+    <title>座談会 → 吹き出しHTML 自動生成ツール</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; line-height: 1.6; }
+        textarea { width: 100%; height: 150px; margin-bottom: 20px; font-size: 14px; padding: 10px; box-sizing: border-box; }
+        button { padding: 10px 20px; font-size: 14px; cursor: pointer; margin-right: 10px; margin-bottom: 20px; }
+        pre { background: #f5f5f5; padding: 20px; border: 1px solid #ddd; white-space: pre-wrap; word-break: break-all; }
+        #preview { border: 1px solid #ddd; padding: 20px; margin-top: 10px; background: #fafafa; }
+        
+        /* 生成されるHTML用のスタイル（プレビュー用） */
+        .member-list { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .member-profile { text-align: center; width: 80px; }
+        .member-profile img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid #eee; }
+        .member-profile .team { font-size: 10px; color: #888; }
+        .member-profile .name { font-size: 12px; font-weight: bold; }
+        
+        .balloon_l, .balloon_r { margin: 20px 0; display: flex; align-items: flex-start; }
+        .balloon_r { flex-direction: row-reverse; }
+        .faceicon { display: flex; flex-direction: column; align-items: center; margin: 0 15px; min-width: 80px; }
+        .faceicon img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+        .faceicon .name { font-size: 11px; color: #666; text-align: center; margin-top: 5px; }
+        .says { max-width: 70%; background: #e8f5e9; padding: 12px 15px; border-radius: 15px; position: relative; }
+        .balloon_r .says { background: #eceff1; }
+        .says p { margin: 0; }
+    </style>
 </head>
-
 <body>
 
-<h2>① 参加メンバー（名前だけ入力）</h2>
-<textarea id="members"></textarea>
+    <h2>① 参加メンバー（1行に1人ずつ名前を入力）</h2>
+    <textarea id="members" placeholder="例：&#10;佐藤勝利&#10;菊池風磨"></textarea>
 
-<h2>② 座談会テキスト</h2>
-<p>形式： 名前：発言</p>
-<textarea id="input"></textarea>
+    <h2>② 座談会テキスト</h2>
+    <p>形式： <strong>名前：発言内容</strong></p>
+    <textarea id="input" placeholder="例：&#10;佐藤：こんにちは！&#10;菊池：よろしくおねがいします。&#10;STAFF：本日はよろしくお願いします。"></textarea>
 
-<button onclick="convert()">HTML生成</button> <button onclick="copyHTML()">HTMLコピー</button>
+    <button onclick="convert()">HTML生成</button>
+    <button onclick="copyHTML()">HTMLコピー</button>
 
-<h3>生成HTML</h3>
-<pre id="output"></pre>
+    <h3>プレビュー</h3>
+    <div id="preview"></div>
 
-<h3>プレビュー</h3>
-<div id="preview"></div>
+    <h3>生成HTMLコード</h3>
+    <pre id="output"></pre>
 
-<script>
+    <script>
+        let MEMBER_DB = {};
+        const STAFF_IMG = "https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png";
 
-let MEMBER_DB = {};
+        // 外部DBの読み込み
+        async function loadMembers() {
+            try {
+                const res = await fetch("./members.json");
+                if (res.ok) {
+                    MEMBER_DB = await res.json();
+                }
+            } catch (e) {
+                console.error("メンバーデータの読み込みに失敗しました。ローカル実行の場合はブラウザ制限の可能性があります。", e);
+            }
+        }
 
-async function loadMembers(){
- const res = await fetch("./members.json");
- MEMBER_DB = await res.json();
-}
+        loadMembers();
 
-loadMembers();
+        function normalize(str) {
+            if (!str) return "";
+            return str.replace(/\s/g, "").toLowerCase()
+                      .replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
+        }
 
-const STAFF_IMG =
-"https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png";
+        function findMember(name) {
+            const clean = normalize(name);
+            if (clean === "staff" || clean === "スタッフ") return { img: STAFF_IMG, team: "STAFF" };
+            if (clean === "一同" || clean === "全員") return { img: STAFF_IMG, team: "ALL" };
 
+            for (const key in MEMBER_DB) {
+                if (normalize(key) === clean) return MEMBER_DB[key];
+            }
+            return null;
+        }
 
-function findMember(name){
+        function convert() {
+            const errors = [];
+            const membersInput = document.getElementById("members").value.split(/\r?\n/);
+            const conversationInput = document.getElementById("input").value.split(/\r?\n/);
 
-  const clean = normalize(name);
+            let html = `<h3>今回の参加メンバー</h3>\n<div class="member-list">`;
+            
+            membersInput.forEach(line => {
+                const name = line.trim();
+                if (!name) return;
+                const data = findMember(name);
+                if (!data) {
+                    errors.push("【未登録】" + name);
+                    return;
+                }
+                html += `\n  <div class="member-profile">\n    <img src="${data.img}">\n    <div class="team">${data.team}</div>\n    <div class="name">${name}</div>\n  </div>`;
+            });
 
-  // 特例
-  if(clean === "staff"){
-    return {
-      img: STAFF_IMG,
-      team:"STAFF"
-    };
-  }
+            html += `\n</div>\n<hr>\n<section class="conversation-log">`;
 
-  if(clean === normalize("一同")){
-    return {
-      img: STAFF_IMG,
-      team:"ALL"
-    };
-  }
+            conversationInput.forEach(line => {
+                if (!line.trim()) return;
+                const parts = line.split(/[:：]/);
+                if (parts.length < 2) return;
 
-  for(const key in MEMBER_DB){
-    if(normalize(key) === clean){
-      return MEMBER_DB[key];
-    }
-  }
+                const name = parts[0].trim();
+                const speech = parts.slice(1).join("：").trim();
+                const data = findMember(name);
 
-  return null;
-}
+                if (!data) {
+                    errors.push("【発言者不明】" + name);
+                    return;
+                }
 
-function convert(){
+                const isStaff = normalize(name) === "staff" || normalize(name) === "スタッフ";
+                const side = isStaff ? "r" : "l";
 
- const errors = [];
+                html += `\n<div class="balloon_${side}">\n  <div class="faceicon">\n    <img src="${data.img}">\n    <span class="name">${name}</span>\n  </div>\n  <div class="says"><p>${speech}</p></div>\n</div>`;
+            });
 
- const memberLines =
- document.getElementById("members").value.split(/\r?\n/);
+            html += `\n</section>`;
 
- let html = `<h3>今回の参加メンバー</h3><div>`;
+            if (errors.length > 0) alert("一部のメンバーが見つかりません：\n" + errors.join("\n"));
 
- memberLines.forEach(line=>{
+            document.getElementById("output").textContent = html;
+            document.getElementById("preview").innerHTML = html;
+        }
 
-  const name = line.trim();
-  if(!name) return;
-
-  const clean = name.replace(/\s/g,"");
-  const upper = clean.toUpperCase();
-
-  if(upper === "STAFF" || clean === "一同") return;
-
-  const data = findMember(name);
-
-  if(!data){
-    errors.push("参加メンバーに存在しません: " + name);
-    return;
-  }
-
-  html += `
-<div class="member-profile">
-<img src="${finalData.img}">
-<div class="team">${finalData.team}</div>
-<div class="name">${name}</div>
-</div>`;
-
- });
-
- html += `</div><section class="conversation-log">`;
-
- const lines =
- document.getElementById("input").value.split(/\r?\n/);
-
- lines.forEach(line=>{
-
-  if(!line.trim()) return;
-
-  const parts = line.split(/[:：]/);
-
-  if(parts.length < 2){
-    errors.push("発言形式エラー: " + line);
-    return;
-  }
-
-  const name = parts[0].trim();
-  const speech = parts.slice(1).join("：").trim();
-const clean = name.replace(/\s/g,"");
-const upper = clean.toUpperCase();
-
-const data = findMember(name);
-
-const isStaff = upper === "STAFF";
-const isAll   = clean === "一同";
-
-let finalData = data;
-
-if(isStaff || isAll){
-  finalData = {
-    img: STAFF_IMG,
-    team: isStaff ? "STAFF" : "ALL"
-  };
-}
-
-if(!finalData){
-  errors.push("メンバーDBに存在しません: " + name);
-  return;
-}
-
-  let side = "l";
-
-  if(name.replace(/\s/g,"").toUpperCase() === "STAFF"){
-    side = "r";
-  }
-
-  html += `
-<div class="balloon_${side}">
-<div class="faceicon">
-<img src="${data.img}">
-<span class="name">${name}</span>
-</div>
-<div class="says"><p>${speech}</p></div>
-</div>`;
-
- });
-
- html += `</section>`;
-
- if(errors.length > 0){
-   alert(errors.join("\n"));
- }
-
- document.getElementById("output").textContent = html;
-
- document.getElementById("preview").innerHTML = html;
-
-}
-
-
-function copyHTML(){
-
- const text =
- document.getElementById("output").textContent;
-
- navigator.clipboard.writeText(text);
-
- alert("HTMLをコピーしました");
-
-}
- 
-function normalize(str){
-  return str
-    .replace(/\s/g,"")              // スペース削除
-    .toLowerCase()
-    .replace(/[ァ-ン]/g, s =>       // カタカナ→ひらがな
-      String.fromCharCode(s.charCodeAt(0) - 0x60)
-    );
-}
-</script>
-
-
-
-</p>
-</div>
-
- 
+        function copyHTML() {
+            const text = document.getElementById("output").textContent;
+            if (!text) return alert("先に生成してください");
+            navigator.clipboard.writeText(text).then(() => alert("コピー完了！"));
+        }
+    </script>
 </body>
 </html>
