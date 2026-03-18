@@ -196,8 +196,8 @@ function convert(){
 
   html += `
 <div class="member-profile">
-<img src="${data.img}">
-<div class="team">${data.team}</div>
+<img src="${finalData.img}">
+<div class="team">${finalData.team}</div>
 <div class="name">${name}</div>
 </div>`;
 
@@ -229,7 +229,16 @@ const data = findMember(name);
 const isStaff = upper === "STAFF";
 const isAll   = clean === "一同";
 
-if(!data && !isStaff && !isAll){
+let finalData = data;
+
+if(isStaff || isAll){
+  finalData = {
+    img: STAFF_IMG,
+    team: isStaff ? "STAFF" : "ALL"
+  };
+}
+
+if(!finalData){
   errors.push("メンバーDBに存在しません: " + name);
   return;
 }
