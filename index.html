@@ -67,42 +67,69 @@
     async function loadMembers() {
         try {
             const res = await fetch("./members.json");
-            if (res.ok) MEMBER_DB = await res.json();
+            if (res.ok) {
+                MEMBER_DB = await res.json();
+                console.log("DB読み込み完了");
+            }
         } catch (e) { console.error("JSON読み込み失敗", e); }
     }
     loadMembers();
 
     function normalize(str) {
         if (!str) return "";
+        // スペースを消し、小文字にし、カタカナをひらがなにする
         return str.replace(/\s/g, "").toLowerCase().replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
     }
 
     function findMember(name) {
         const clean = normalize(name);
-        if (clean === "staff" || clean === "スタッフ") return { name: "STAFF", img: STAFF_IMG, team: "STAFF", color: "#000000" };
+        
+        // スタッフ判定（「S」や「s」もスタッフにする）
+        if (clean === "staff" || clean === "スタッフ" || clean === "s") {
+            return { name: "STAFF", img: STAFF_IMG, team: "STAFF", color: "#000000" };
+        }
+
         for (const key in MEMBER_DB) {
-            const dbKey = normalize(key);
-            if (dbKey.includes(clean) || clean.includes(dbKey)) return { ...MEMBER_DB[key], name: key };
+            const dbFullname = normalize(key); // DB側の名前（スペースなし）
+            
+            // ルール1: 入力した名前が、DBの名前に含まれているか（名字だけマッチ）
+            // ルール2: DBの名前が、入力した名前に含まれているか
+            if (dbFullname.includes(clean) || clean.includes(dbFullname)) {
+                return { ...MEMBER_DB[key], name: key };
+            }
         }
         return null;
     }
 
     function convert() {
-        const mLines = document.getElementById("members").value.split("\n");
-        const cLines = document.getElementById("input").value.split("\n");
+        const mInput = document.getElementById("members").value.trim();
+        const iInput = document.getElementById("input").value.trim();
+        
+        if (!mInput || !iInput) {
+            alert("メンバーと台本を入力してください");
+            return;
+        }
+
+        const mLines = mInput.split(/\r?\n/);
+        const cLines = iInput.split(/\r?\n/);
         let errors = [];
 
         // ① メンバーリスト
         let mHtml = `<div class="member-profiles-container">`;
         mLines.forEach(line => {
-            const d = findMember(line.trim());
+            const namePart = line.trim();
+            if (!namePart) return;
+            const d = findMember(namePart);
             if (d) {
-                mHtml += `<div class="member-profile">
-                    <div class="Profafliliation">${d.team}</div>
-                    <div class="faceicon"><img src="${d.img}" style="border: 4px solid ${d.color};"></div>
-                    <div class="Profilename">${d.name}</div>
-                </div>`;
-            } else if(line.trim()) errors.push(line);
+                mHtml += `
+<div class="member-profile">
+    <div class="Profafliliation">${d.team || "EBiDAN"}</div>
+    <div class="faceicon"><img src="${d.img}" style="border: 4px solid ${d.color};"></div>
+    <div class="Profilename">${d.name}</div>
+</div>`;
+            } else {
+                errors.push(namePart);
+            }
         });
         mHtml += `</div><hr>`;
 
@@ -111,15 +138,24 @@
         cLines.forEach(line => {
             const parts = line.split(/[:：]/);
             if (parts.length < 2) return;
-            const name = parts[0].trim();
+            const namePart = parts[0].trim();
             const text = parts.slice(1).join("：").trim();
-            const d = findMember(name);
+            const d = findMember(namePart);
+
             if (d) {
-                const side = (normalize(name) === "staff") ? "r" : "l";
-                cHtml += `<div class="balloon_${side}">
-                    <div class="faceicon"><img src="${d.img}" style="border: 4px solid ${d.color};"><span class="name">${name}</span></div>
-                    <div class="says"><p>${text}</p></div>
-                </div>`;
+                // S または STAFF なら右側(r)、それ以外は左側(l)
+                const isStaff = (normalize(namePart) === "staff" || normalize(namePart) === "s");
+                const side = isStaff ? "r" : "l";
+                cHtml += `
+<div class="balloon_${side}">
+    <div class="faceicon">
+        <img src="${d.img}" style="border: 4px solid ${d.color};">
+        <span class="name">${namePart}</span>
+    </div>
+    <div class="says"><p>${text}</p></div>
+</div>`;
+            } else {
+                errors.push("【発言者不明】" + namePart);
             }
         });
         cHtml += `</section>`;
@@ -127,11 +163,17 @@
         const final = `<h3>今回の参加メンバー</h3>` + mHtml + cHtml;
         document.getElementById("preview").innerHTML = final;
         document.getElementById("output").textContent = final;
-        if (errors.length > 0) alert("未登録: " + errors.join(", "));
+        
+        if (errors.length > 0) {
+            // 重複を消してアラート
+            const uniqueErrors = [...new Set(errors)];
+            alert("一部のメンバーが見つかりません：\n" + uniqueErrors.join("\n"));
+        }
     }
 
     function copyHTML() {
         const out = document.getElementById("output").textContent;
+        if (!out) return alert("先に生成してください");
         navigator.clipboard.writeText(out).then(() => alert("コピー完了！"));
     }
 </script>
