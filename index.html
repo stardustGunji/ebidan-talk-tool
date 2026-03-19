@@ -30,11 +30,11 @@
 <body>
 
     <h2>① 参加メンバー（1行に1人ずつ名前を入力）</h2>
-    <textarea id="members" placeholder="例：&#10;柏木悠&#10;冨田侑暉"></textarea>
+    <textarea id="members" placeholder="例：&#10;佐藤勝利&#10;菊池風磨"></textarea>
 
     <h2>② 座談会テキスト</h2>
     <p>形式： <strong>名前：発言内容</strong></p>
-    <textarea id="input" placeholder="例：&#10;柏木：こんにちは！&#10;冨田：よろしくおねがいします。&#10;STAFF：本日はよろしくお願いします。"></textarea>
+    <textarea id="input" placeholder="例：&#10;佐藤：こんにちは！&#10;菊池：よろしくおねがいします。&#10;STAFF：本日はよろしくお願いします。"></textarea>
 
     <button onclick="convert()">HTML生成</button>
     <button onclick="copyHTML()">HTMLコピー</button>
@@ -46,91 +46,93 @@
     <pre id="output"></pre>
 
     <script>
-      let MEMBER_DB = {};
-      const STAFF_IMG = "https://ebidan.com/s3/skiyaki/uploads/ckeditor/pictures/761972/content_ne.png";
-  
-      async function loadMembers() {
-          try {
-              const res = await fetch("./members.json");
-              if (res.ok) MEMBER_DB = await res.json();
-          } catch (e) {
-              console.error("DB読み込みエラー。サーバー経由で開くか、Edge/Chromeの制限を確認してください。");
-          }
-      }
-      loadMembers();
-  
-      function normalize(str) {
-          if (!str) return "";
-          return str.replace(/\s/g, "").toLowerCase()
-                    .replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
-      }
-  
-      // 名前を探す関数をより強力に
-      function findMember(name) {
-          const clean = normalize(name);
-          if (clean === "staff" || clean === "スタッフ") return { name: "STAFF", img: STAFF_IMG, team: "STAFF" };
-          if (clean === "一同" || clean === "全員") return { name: "一同", img: STAFF_IMG, team: "ALL" };
-  
-          for (const key in MEMBER_DB) {
-              const dbKey = normalize(key);
-              // フルネーム一致、または「矢野原」が「矢野原圭吾」に含まれる場合にヒット
-              if (dbKey === clean || dbKey.includes(clean) || clean.includes(dbKey)) {
-                  return { ...MEMBER_DB[key], name: key }; // DB側の正式名称を返す
-              }
-          }
-          return null;
-      }
-  
-      function convert() {
-          const errors = [];
-          const membersInput = document.getElementById("members").value.split(/\r?\n/);
-          const conversationInput = document.getElementById("input").value.split(/\r?\n/);
-  
-          let html = `<h3>今回の参加メンバー</h3>\n<div class="member-list">`;
-          
-          // ① メンバーリスト生成（名字だけでもDBから正式名称を拾う）
-          membersInput.forEach(line => {
-              const inputName = line.trim();
-              if (!inputName) return;
-              const data = findMember(inputName);
-              if (!data) {
-                  errors.push("【未登録】" + inputName);
-                  return;
-              }
-              html += `\n  <div class="member-profile">\n    <img src="${data.img}">\n    <div class="team">${data.team}</div>\n    <div class="name">${data.name}</div>\n  </div>`;
-          });
-  
-          html += `\n</div>\n<hr>\n<section class="conversation-log">`;
-  
-          // ② 座談会本文
-          conversationInput.forEach(line => {
-              if (!line.trim()) return;
-              const parts = line.split(/[:：]/);
-              if (parts.length < 2) return;
-  
-              const inputName = parts[0].trim();
-              const speech = parts.slice(1).join("：").trim();
-              const data = findMember(inputName);
-  
-              if (!data) {
-                  errors.push("【発言者不明】" + inputName);
-                  return;
-              }
-  
-              const isStaff = normalize(inputName) === "staff" || normalize(inputName) === "スタッフ";
-              const side = isStaff ? "r" : "l";
-  
-              html += `\n<div class="balloon_${side}">\n  <div class="faceicon">\n    <img src="${data.img}">\n    <span class="name">${inputName}</span>\n  </div>\n  <div class="says"><p>${speech}</p></div>\n</div>`;
-          });
-  
-          html += `\n</section>`;
-  
-          if (errors.length > 0) alert("以下の名前が見つかりません：\n" + errors.join("\n"));
-  
-          document.getElementById("output").textContent = html;
-          document.getElementById("preview").innerHTML = html;
-      }
-      // copyHTML関数はそのまま
+     // 名前を探す関数
+function findMember(name) {
+    const clean = normalize(name);
+    if (clean === "staff" || clean === "スタッフ") {
+        return { name: "STAFF", img: STAFF_IMG, team: "STAFF", color: "black" };
+    }
+    if (clean === "一同" || clean === "全員") {
+        return { name: "一同", img: STAFF_IMG, team: "ALL", color: "gray" };
+    }
+
+    for (const key in MEMBER_DB) {
+        const dbKey = normalize(key);
+        if (dbKey.includes(clean) || clean.includes(dbKey)) {
+            return { ...MEMBER_DB[key], name: key };
+        }
+    }
+    return null;
+}
+
+function convert() {
+    const errors = [];
+    const membersInput = document.getElementById("members").value.split(/\r?\n/);
+    const conversationInput = document.getElementById("input").value.split(/\r?\n/);
+
+    // ① 参加メンバーセクション（CSSの .member-profiles-container に対応）
+    let html = `<h3>今回の参加メンバー</h3>\n<div class="member-profiles-container">`;
+    
+    membersInput.forEach(line => {
+        const name = line.trim();
+        if (!name) return;
+        const data = findMember(name);
+        if (!data) {
+            errors.push("【未登録】" + name);
+            return;
+        }
+
+        // 枠線の色（DBにcolorがなければgrayに）
+        const borderColor = data.color ? `border-${data.color}` : "border-gray";
+
+        html += `
+<div class="member-profile">
+    <div class="Profafliliation">${data.team}</div>
+    <div class="faceicon ${borderColor}">
+        <img src="${data.img}">
+    </div>
+    <div class="Profilename">${data.name}</div>
+</div>`;
+    });
+
+    html += `</div><hr><section class="conversation-log">`;
+
+    // ② 座談会本文（CSSの .balloon_l / .balloon_r / .says に対応）
+    conversationInput.forEach(line => {
+        if (!line.trim()) return;
+        const parts = line.split(/[:：]/);
+        if (parts.length < 2) return;
+
+        const name = parts[0].trim();
+        const speech = parts.slice(1).join("：").trim();
+        const data = findMember(name);
+
+        if (!data) {
+            errors.push("【不明】" + name);
+            return;
+        }
+
+        const isStaff = normalize(name) === "staff" || normalize(name) === "スタッフ";
+        const side = isStaff ? "r" : "l";
+        const borderColor = data.color ? `border-${data.color}` : "border-gray";
+
+        html += `
+<div class="balloon_${side}">
+    <div class="faceicon ${borderColor}">
+        <img src="${data.img}">
+        <span class="name">${name}</span>
+    </div>
+    <div class="says"><p>${speech}</p></div>
+</div>`;
+    });
+
+    html += `\n</section>`;
+
+    if (errors.length > 0) alert("エラー:\n" + errors.join("\n"));
+
+    document.getElementById("output").textContent = html;
+    document.getElementById("preview").innerHTML = html;
+}
   </script>
 </body>
 </html>
