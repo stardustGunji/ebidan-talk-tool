@@ -77,23 +77,24 @@
 
     function normalize(str) {
         if (!str) return "";
-        // スペースを消し、小文字にし、カタカナをひらがなにする
         return str.replace(/\s/g, "").toLowerCase().replace(/[ァ-ン]/g, s => String.fromCharCode(s.charCodeAt(0) - 0x60));
     }
 
     function findMember(name) {
         const clean = normalize(name);
         
-        // スタッフ判定（「S」や「s」もスタッフにする）
+        // スタッフ判定
         if (clean === "staff" || clean === "スタッフ" || clean === "s") {
-            return { name: "STAFF", img: STAFF_IMG, team: "STAFF", color: "#000000" };
+            return { name: "STAFF", img: STAFF_IMG, team: "STAFF", color: "#000000", isStaff: true };
+        }
+        
+        // 一同判定
+        if (clean === "一同" || clean === "全員") {
+            return { name: "一同", img: STAFF_IMG, team: "ALL", color: "#aaa", isAll: true };
         }
 
         for (const key in MEMBER_DB) {
-            const dbFullname = normalize(key); // DB側の名前（スペースなし）
-            
-            // ルール1: 入力した名前が、DBの名前に含まれているか（名字だけマッチ）
-            // ルール2: DBの名前が、入力した名前に含まれているか
+            const dbFullname = normalize(key);
             if (dbFullname.includes(clean) || clean.includes(dbFullname)) {
                 return { ...MEMBER_DB[key], name: key };
             }
@@ -123,7 +124,7 @@
             if (d) {
                 mHtml += `
 <div class="member-profile">
-    <div class="Profafliliation">${d.team || "EBiDAN"}</div>
+    <div class="Profafliliation">${d.team}</div>
     <div class="faceicon"><img src="${d.img}" style="border: 4px solid ${d.color};"></div>
     <div class="Profilename">${d.name}</div>
 </div>`;
@@ -143,9 +144,9 @@
             const d = findMember(namePart);
 
             if (d) {
-                // S または STAFF なら右側(r)、それ以外は左側(l)
-                const isStaff = (normalize(namePart) === "staff" || normalize(namePart) === "s");
-                const side = isStaff ? "r" : "l";
+                // STAFF（またはS）の時だけ右（r）、それ以外（一同を含む）は左（l）
+                const side = d.isStaff ? "r" : "l";
+                
                 cHtml += `
 <div class="balloon_${side}">
     <div class="faceicon">
@@ -165,9 +166,8 @@
         document.getElementById("output").textContent = final;
         
         if (errors.length > 0) {
-            // 重複を消してアラート
             const uniqueErrors = [...new Set(errors)];
-            alert("一部のメンバーが見つかりません：\n" + uniqueErrors.join("\n"));
+            alert("見つかりません：\n" + uniqueErrors.join("\n"));
         }
     }
 
