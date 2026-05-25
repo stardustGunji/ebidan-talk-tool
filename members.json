@@ -1,17 +1,12 @@
 {
   "蒼井 凱斗": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25249/2M6A8115.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26391/%E8%92%BC%E4%BA%95%E5%87%B1%E6%96%97.jpg",
     "color": "#aaa"
   },
   "青山 叶和": {
     "team": "東京",
     "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/23253/tokyo_%E9%9D%92%E5%B1%B1%E5%8F%B6%E5%92%8C.jpg",
-    "color": "#e65d51"
-  },
-  "浅井 陽人": {
-    "team": "東京",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25076/BB7th-SAKURA_01_ASAI_HARUTO.jpg",
     "color": "#e65d51"
   },
   "浅岡 大智": {
@@ -46,7 +41,7 @@
   },
   "安東 勇弥": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/23862/30E8D814-C88C-4DDF-8D27-41C1278648B7_1_201_a.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26392/%E5%AE%89%E6%9D%B1%E5%8B%87%E5%BC%A5.jpg",
     "color": "#aaa"
   },
   "池田 楓雅": {
@@ -76,7 +71,7 @@
   },
   "伊藤 柚葵": {
     "team": "Not Found",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25663/ITO.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26238/%E4%BC%8A%E8%97%A4%E6%9F%9A%E8%91%B5.jpg",
     "color": "#ff6fb1"
   },
   "稲毛 眞生": {
@@ -86,17 +81,12 @@
   },
   "乾 琉翔": {
     "team": "東京",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/22353/tokyo_inuiriu.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26515/%E4%B9%BE_%E3%82%A2%E3%83%BC%E5%86%99_KL10310.jpg",
     "color": "#e65d51"
   },
   "犬飼 太陽": {
     "team": "東京",
     "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/19100/%E7%8A%AC%E9%A3%BC%E5%A4%AA%E9%99%BD_%E5%AE%A3%E6%9D%90.jpg",
-    "color": "#e65d51"
-  },
-  "犬塚 心": {
-    "team": "東京",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/22852/BOYZTERIOS_01_INUZUKA_KOKORO.jpg",
     "color": "#e65d51"
   },
   "今井 冬空": {
@@ -111,7 +101,7 @@
   },
   "上田 悠斗": {
     "team": "名古屋",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25781/%E4%B8%8A%E7%94%B0%E6%82%A0%E6%96%97_2_.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26483/%E4%B8%8A%E7%94%B0%E6%82%A0%E6%96%97_REV1.JPG",
     "color": "#ebc702"
   },
   "江口 勢梧": {
@@ -121,7 +111,7 @@
   },
   "蛯原 颯樹": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/24621/biharasoki_sen250701.JPG",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26393/%E8%9B%AF%E5%8E%9F%E9%A2%AF%E6%A8%B9.jpg",
     "color": "#aaa"
   },
   "大倉 琉人": {
@@ -131,7 +121,7 @@
   },
   "大﨑 翔真": {
     "team": "Not Found",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25664/OHSAKI.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26239/%E5%A4%A7%EF%A8%91%E7%BF%94%E7%9C%9F.jpg",
     "color": "#ff6fb1"
   },
   "大野 遥斗": {
@@ -151,8 +141,13 @@
   },
   "織田 夢叶": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/24623/odamuto_sen2501.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26394/%E7%B9%94%E7%94%B0%E5%A4%A2%E5%8F%B6.jpg",
     "color": "#aaa"
+  },
+  "小野 颯斗": {
+    "team": "東京",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26510/%E5%B0%8F%E9%87%8E%E9%A2%AF%E6%96%97_%E5%AE%A3%E6%9D%90.jpg",
+    "color": "#e65d51"
   },
   "金枝 慧": {
     "team": "名古屋",
@@ -176,7 +171,7 @@
   },
   "神田 篤人": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/23863/E8DB7712-F258-481A-B8D5-36B79B0DD773_1_201_a.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26395/%E7%A5%9E%E7%94%B0%E7%AF%A4%E4%BA%BA.jpg",
     "color": "#aaa"
   },
   "北島 岬": {
@@ -186,7 +181,7 @@
   },
   "栗原 優翔": {
     "team": "東京",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25408/%E6%A0%97%E5%8E%9F%E5%84%AA%E7%BF%94%E5%AE%A3%E6%9D%90.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26516/%E6%A0%97%E5%8E%9F_%E3%82%A2%E3%83%BC%E5%86%99_KL10744.jpg",
     "color": "#e65d51"
   },
   "黒澤 諒": {
@@ -229,9 +224,19 @@
     "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/24654/satainori.jpg",
     "color": "#aaa"
   },
+  "佐藤 想": {
+    "team": "東京",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26512/%E4%BD%90%E8%97%A4%E6%83%B3_%E5%AE%A3%E6%9D%90.jpg",
+    "color": "#e65d51"
+  },
   "佐藤 大志": {
     "team": "東京",
     "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/19533/%E5%A4%A7%E5%BF%97HP%E3%82%B9%E3%82%AF%E3%82%A8%E3%82%A2.jpg",
+    "color": "#e65d51"
+  },
+  "佐藤 来未登": {
+    "team": "東京",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26261/%E4%BD%90%E8%97%A4%E6%9D%A5%E6%9C%AA%E7%99%BB__1_.jpg",
     "color": "#e65d51"
   },
   "真田 理希": {
@@ -269,14 +274,9 @@
     "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/24812/02_SHIROYAMA_SO.jpg",
     "color": "#e65d51"
   },
-  "丈流": {
-    "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/21733/joell.jpg",
-    "color": "#ca86de"
-  },
   "鈴木 瑛斗": {
     "team": "大阪",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25507/%E9%88%B4%E6%9C%A8.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26485/%E9%88%B4%E6%9C%A8%E7%91%9B%E6%96%97_REV1.JPG",
     "color": "#3fc7db"
   },
   "鈴木 智有": {
@@ -306,7 +306,7 @@
   },
   "武市 尚士": {
     "team": "名古屋",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25784/%E6%AD%A6%E5%B8%82%E5%B0%9A%E5%A3%AB.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26484/%E6%AD%A6%E5%B8%82%E5%B0%9A%E5%A3%AB_REV1.JPG",
     "color": "#ebc702"
   },
   "立石 翔真": {
@@ -326,7 +326,7 @@
   },
   "玉木 盛柊": {
     "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/18750/tamakiseisyu.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26298/202604_tamakiseisyu.jpg",
     "color": "#ca86de"
   },
   "千葉 悠斗": {
@@ -341,12 +341,12 @@
   },
   "角田 蓮介": {
     "team": "東京",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/22138/_P_0602_137446.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26517/%E8%A7%92%E7%94%B0_%E3%82%A2%E3%83%BC%E5%86%99_KL19775.jpg",
     "color": "#e65d51"
   },
   "長岡 德斉": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/23866/4C9134CB-D33A-435E-8E1B-CCD1540A0D00_1_201_a.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26396/%E9%95%B7%E5%B2%A1%E5%BE%B7%E6%96%89.jpg",
     "color": "#aaa"
   },
   "長岡 伶旺": {
@@ -361,7 +361,7 @@
   },
   "永沼 瑛太": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/23873/%E6%B0%B8%E6%B2%BC%E7%91%9B%E5%A4%AA.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26397/%E6%B0%B8%E6%B2%BC%E7%91%9B%E5%A4%AA.jpg",
     "color": "#aaa"
   },
   "中野 龍": {
@@ -374,19 +374,24 @@
     "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25786/%E4%B8%AD%E6%9D%91%E6%9C%89.jpeg",
     "color": "#ebc702"
   },
+  "永山 賢": {
+    "team": "名古屋",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26316/%E6%B0%B8%E5%B1%B1%E8%B3%A2.jpg",
+    "color": "#ebc702"
+  },
   "凪 海音": {
     "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/18746/nagiamane.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26299/202604_nagiamane.jpg",
     "color": "#ca86de"
   },
   "成田 粋": {
     "team": "Not Found",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25665/NARITA.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26240/%E6%88%90%E7%94%B0%E7%B2%8B.jpg",
     "color": "#ff6fb1"
   },
   "西田 瑛音": {
     "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/18748/nishidaeito.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26300/202604_nishidaeito.jpg",
     "color": "#ca86de"
   },
   "西村 悠里": {
@@ -416,7 +421,7 @@
   },
   "濱里 珀琉": {
     "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/24243/hamazatoharyu_next.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26301/202604_hamazatoharyu.jpg",
     "color": "#ca86de"
   },
   "林 新竜": {
@@ -426,7 +431,7 @@
   },
   "葉山 ことり": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/21991/%E8%91%89%E5%B1%B1%E3%81%93%E3%81%A8%E3%82%8A.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26398/%E8%91%89%E5%B1%B1%E3%81%93%E3%81%A8%E3%82%8A.jpg",
     "color": "#aaa"
   },
   "原 昇亜": {
@@ -436,7 +441,7 @@
   },
   "福本 花道": {
     "team": "東京",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25401/%E7%A6%8F%E6%9C%AC%E8%8A%B1%E9%81%93%E5%AE%A3%E6%9D%90.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26518/%E7%A6%8F%E6%9C%AC_%E3%82%A2%E3%83%BC%E5%86%99_KL11725.jpg",
     "color": "#e65d51"
   },
   "藤澤 敬梧": {
@@ -486,7 +491,7 @@
   },
   "水上 星矢": {
     "team": "Not Found",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25666/MIZUKAMI.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26241/%E6%B0%B4%E4%B8%8A%E6%98%9F%E7%9F%A2.jpg",
     "color": "#ff6fb1"
   },
   "光延 ジヨウ": {
@@ -516,7 +521,7 @@
   },
   "宮良 大": {
     "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/22377/miyarahiro.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26302/202604_miyarahiro.jpg",
     "color": "#ca86de"
   },
   "森口 智仁": {
@@ -526,12 +531,12 @@
   },
   "守本 勝俱": {
     "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/18047/morimotokatsugu.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26303/202604_morimotokatsugu.jpg",
     "color": "#ca86de"
   },
   "矢島 優斗": {
     "team": "Not Found",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25667/YAJIMA.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26242/%E7%9F%A2%E5%B3%B6%E5%84%AA%E6%96%97.jpg",
     "color": "#ff6fb1"
   },
   "矢野原 圭吾": {
@@ -546,7 +551,7 @@
   },
   "山下 唯登": {
     "team": "福岡",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/23867/C0F0AE90-A4AC-4E68-BB14-B61F4B552B12_1_201_a.jpeg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26399/%E5%B1%B1%E4%B8%8B%E5%94%AF%E7%99%BB.jpg",
     "color": "#aaa"
   },
   "祐楽": {
@@ -556,12 +561,12 @@
   },
   "横山 瑛音": {
     "team": "東京",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25399/%E6%A8%AA%E5%B1%B1%E7%91%9B%E9%9F%B3%E5%AE%A3%E6%9D%90.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26481/%E6%A8%AA%E5%B1%B1%E7%91%9B%E9%9F%B3_REV1.JPG",
     "color": "#e65d51"
   },
   "吉井 悠真": {
     "team": "沖縄",
-    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/23947/%E5%90%89%E4%BA%95_%E6%82%A0%E7%9C%9F.jpg",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26304/202604_yoshiiyuma.jpg",
     "color": "#ca86de"
   },
   "吉岡 蒼": {
@@ -573,6 +578,16 @@
     "team": "名古屋",
     "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/25771/%E5%90%89%EF%A8%91_%E7%BF%BC.jpeg",
     "color": "#ebc702"
+  },
+  "吉澤 レイン": {
+    "team": "東京",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26514/%E5%90%89%E6%BE%A4%E3%83%AC%E3%82%A4%E3%83%B3%E5%AE%A3%E6%9D%90.jpg",
+    "color": "#e65d51"
+  },
+  "吉田 颯真": {
+    "team": "東京",
+    "img": "https://ebidan.com/s3/skiyaki/uploads/artist_photo/image/26482/%E5%90%89%E7%94%B0%E9%A2%AF%E7%9C%9F_REV1.JPG",
+    "color": "#e65d51"
   },
   "りきまる": {
     "team": "東京",
