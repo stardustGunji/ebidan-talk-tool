@@ -138,31 +138,76 @@
         mHtml += `</div><hr>`;
 
         // ② 会話ログ
-        let cHtml = `<section class="conversation-log">`;
-        cLines.forEach(line => {
-            const parts = line.split(/[:：]/);
-            if (parts.length < 2) return;
-            const namePart = parts[0].trim();
-            const text = parts.slice(1).join("：").trim();
-            const d = findMember(namePart);
+// ② 会話ログ
 
-            if (d) {
-                // STAFF（またはS）の時だけ右（r）、それ以外（一同を含む）は左（l）
-                const side = d.isStaff ? "r" : "l";
-                
-                cHtml += `
+let cHtml = `<section class="conversation-log">`;
+
+cLines.forEach(line => {
+
+    const raw = line.trim();
+
+    if (!raw) return;
+
+    // # 見出し
+    if(raw.startsWith("#")){
+
+        cHtml += `
+<h3>${raw.replace(/^#/,"").trim()}</h3>
+`;
+
+        return;
+    }
+
+    // > ブリッジ文
+    if(raw.startsWith(">")){
+
+        cHtml += `
+<p>${raw.replace(/^>/,"").trim()}</p>
+`;
+
+        return;
+    }
+
+    const parts = raw.split(/[:：]/);
+
+    if(parts.length < 2){
+
+        errors.push("形式エラー: " + raw);
+
+        return;
+    }
+
+    const namePart = parts[0].trim();
+    const text = parts.slice(1).join("：").trim();
+
+    const d = findMember(namePart);
+
+    if(d){
+
+        const side = d.isStaff ? "r" : "l";
+
+        cHtml += `
 <div class="balloon_${side}">
     <div class="faceicon">
-        <img src="${d.img}" style="border: 4px solid ${d.color};">
+        <img src="${d.img}" style="border:4px solid ${d.color};">
         <span class="name">${namePart}</span>
     </div>
-    <div class="says"><p>${text}</p></div>
+
+    <div class="says">
+        <p>${text}</p>
+    </div>
+
 </div>`;
-            } else {
-                errors.push("【発言者不明】" + namePart);
-            }
-        });
-        cHtml += `</section>`;
+
+    }else{
+
+        errors.push("【発言者不明】" + namePart);
+
+    }
+
+});
+
+cHtml += `</section>`;
 
         const final = `<h3>今回の参加メンバー</h3>` + mHtml + cHtml;
         document.getElementById("preview").innerHTML = final;
