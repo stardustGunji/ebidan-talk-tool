@@ -118,6 +118,7 @@
         const mLines = mInput.split(/\r?\n/);
         const cLines = iInput.split(/\r?\n/);
         let errors = [];
+        let pendingTitle = "";
 
         // ① メンバーリスト
         let mHtml = `<div class="member-profiles-container">`;
@@ -150,24 +151,46 @@ cLines.forEach(line => {
     if (!raw) return;
 
     // # 見出し
-    if(raw.startsWith("#")){
+if(raw.startsWith("#")){
 
-        cHtml += `
-<h3>${raw.replace(/^#/,"").trim()}</h3>
-`;
+    pendingTitle =
+    raw.replace(/^#/,"").trim();
 
-        return;
-    }
+    return;
+}
 
     // > ブリッジ文
-    if(raw.startsWith(">")){
+if(raw.startsWith(">")){
 
-        cHtml += `
-<p>${raw.replace(/^>/,"").trim()}</p>
+    const bridgeText =
+    raw.replace(/^>/,"").trim();
+
+    cHtml += `
+
+<div class="bridge-block">
+
+<div class="bridge-line"></div>
+
+${
+pendingTitle
+? `<h3>${pendingTitle}</h3>`
+: ""
+}
+
+<p class="bridge">
+${bridgeText}
+</p>
+
+<div class="bridge-line"></div>
+
+</div>
+
 `;
 
-        return;
-    }
+    pendingTitle = "";
+
+    return;
+}
 
     const parts = raw.split(/[:：]/);
 
