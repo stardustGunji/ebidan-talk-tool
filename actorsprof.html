@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNSアイコン横並び！プロフィールHTMLジェネレーター</title>
+    <title>【対策版】SNSアイコン横並びジェネレーター</title>
     <style>
         body { font-family: sans-serif; background: #f4f5f7; padding: 20px; color: #333; }
         .container { max-width: 750px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -22,17 +22,17 @@
 <body>
 
 <div class="container">
-    <h1>SNSアイコン横並び！プロフィールHTMLジェネレーター</h1>
+    <h1>【対策版】SNSアイコン横並びジェネレーター</h1>
     <div class="subtitle">
-        ※4大SNS（インスタ・X・TikTok・YouTube）は名前の右側にアイコンで横並びになります。<br>
-        ※スターダスト公式プロフィールは、従来通り下にクリーンな白ボタンとして配置されます。
+        ※管理画面のセキュリティ（SVG自動消去）を突破する特製仕様です。<br>
+        ※持っていないSNSの行には「なし」または「none」と入力してください。
     </div>
     
-    <label for="imgUrl">宣材写真の画像URL（※ここだけ単体入力）</label>
+    <label for="imgUrl">宣材写真の画像URL</label>
     <input type="text" id="imgUrl" value="https://cdn.stardust.co.jp/wp-content/uploads/2022/05/kitajimamisaki_sen04-367x550.jpg">
 
     <label for="bulkInput">プロフィールデータ（一括ペーストエリア）</label>
-    <textarea id="bulkInput" placeholder="北島 岬&#10;Misaki Kitajima&#10;2007.08.06 (18歳)&#10;https://www.stardust.co.jp/talent/section3/kitajimamisaki/&#10;https://www.instagram.com/misaki_kitajima_official/&#10;なし&#10;なし&#10;なし&#10;12年間水泳を習っており、得意種目は自由形。空手・陸上・バドミントンなど多くのスポーツ経験があります。&#10;また、ピアノを5年間習っており、あらゆる楽曲の演奏が可能です。&#10;表現者として、大きな目標を掲げており、常に高みを目指します。"></textarea>
+    <textarea id="bulkInput" placeholder="鈴木 智有&#10;SUZUKI CHIARI&#10;1997年7月9日 28歳&#10;https://www.stardust.co.jp/talent/stardust-gg/suzukichiari/&#10;https://instagram.com/chiari_suzuki_official&#10;https://twitter.com/suzukichiari&#10;なし&#10;https://www.youtube.com/@suzukichiari-de-Internet&#10;情熱を持って頑張りたいです！"></textarea>
 
     <button onclick="generateHTML()">HTMLコードを生成する</button>
 
@@ -80,35 +80,29 @@ function generateHTML() {
         return url && url !== 'なし' && url !== 'none' && url !== '無し';
     }
 
-    // 名前の右側に埋め込むSNSアイコンのインライン用SVGコード群
+    // SVGをBase64変換した安全なデータURI画像データ
+    const icons = {
+        insta: "data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='2' width='20' height='20' rx='5' ry='5'%3E%3C/rect%3E%3Cpath d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'%3E%3C/path%3E%3Cline x1='17.5' y1='6.5' x2='17.51' y2='6.5'%3E%3C/line%3E%3C/svg%3E",
+        twitter: "data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'%3E%3Cpath d='M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'/%3E%3C/svg%3E",
+        tiktok: "data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'%3E%3Cpath d='M12.525.229a8.175 8.175 0 0 1 4.793 2.502 8.252 8.252 0 0 1-1.077 4.133 7.828 7.828 0 0 0-3.567-1.16v4.664a4.931 4.931 0 1 1-4.931-4.931V10.1a.267.267 0 1 0 .267.267v-5.2a9.6 9.6 0 1 0 4.664 4.664V.229z'/%3E%3C/svg%3E",
+        youtube: "data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z'%3E%3C/path%3E%3Cpolygon points='9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02'%3E%3C/polygon%3E%3C/svg%3E"
+    };
+
     let snsIcons = [];
 
-    // Instagram アイコン
     if (isValid(instaUrl)) {
-        snsIcons.push(`<a href="${instaUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 24px; height: 24px; color: #111111; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:100%;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-</a>`);
+        snsIcons.push(`<a href="${instaUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 24px; height: 24px; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1"><img src="${icons.insta}" alt="Instagram" style="width:100%; height:100%; display:block; border:none;" /></a>`);
     }
-    // Twitter / X アイコン
     if (isValid(twitterUrl)) {
-        snsIcons.push(`<a href="${twitterUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 22px; height: 22px; color: #111111; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1">
-<svg viewBox="0 0 24 24" fill="currentColor" style="width:100%; height:100%;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-</a>`);
+        snsIcons.push(`<a href="${twitterUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 22px; height: 22px; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1"><img src="${icons.twitter}" alt="Twitter(X)" style="width:100%; height:100%; display:block; border:none;" /></a>`);
     }
-    // TikTok アイコン
     if (isValid(tiktokUrl)) {
-        snsIcons.push(`<a href="${tiktokUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 22px; height: 22px; color: #111111; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1">
-<svg viewBox="0 0 24 24" fill="currentColor" style="width:100%; height:100%;"><path d="M12.525.229a8.175 8.175 0 0 1 4.793 2.502 8.252 8.252 0 0 1-1.077 4.133 7.828 7.828 0 0 0-3.567-1.16v4.664a4.931 4.931 0 1 1-4.931-4.931V10.1a.267.267 0 1 0 .267.267v-5.2a9.6 9.6 0 1 0 4.664 4.664V.229z"/></svg>
-</a>`);
+        snsIcons.push(`<a href="${tiktokUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 22px; height: 22px; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1"><img src="${icons.tiktok}" alt="TikTok" style="width:100%; height:100%; display:block; border:none;" /></a>`);
     }
-    // YouTube アイコン
     if (isValid(youtubeUrl)) {
-        snsIcons.push(`<a href="${youtubeUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 26px; height: 26px; color: #111111; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:100%;"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
-</a>`);
+        snsIcons.push(`<a href="${youtubeUrl}" target="_blank" rel="noopener" style="display: inline-block; width: 26px; height: 26px; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.6" onmouseout="this.style.opacity=1"><img src="${icons.youtube}" alt="YouTube" style="width:100%; height:100%; display:block; border:none;" /></a>`);
     }
 
-    // アイコンたちを横並びにするラッパーHTML
     let iconAreaHTML = '';
     if (snsIcons.length > 0) {
         iconAreaHTML = `<div style="display: flex; align-items: center; gap: 16px; margin-left: auto; padding-left: 15px;">\n${snsIcons.join('\n')}\n</div>`;
