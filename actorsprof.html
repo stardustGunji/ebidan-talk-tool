@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【公式CSSハック版】SNSアイコン横並びジェネレーター</title>
+    <title>【完全解決版】SNSアイコンプロフィールジェネレーター</title>
     <style>
         body { font-family: sans-serif; background: #f4f5f7; padding: 20px; color: #333; }
         .container { max-width: 750px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -22,10 +22,10 @@
 <body>
 
 <div class="container">
-    <h1>【公式CSSハック版】SNSアイコン横並びジェネレーター</h1>
+    <h1>【完全解決版】SNSアイコンプロフィールジェネレーター</h1>
     <div class="subtitle">
-        ※サイトに最初からある「SocialNavCH」のCSSクラスとSVGを完全に密輸しました。<br>
-        ※システムに絶対に消されない100%安全な公式準拠仕様です。
+        ※紫のハイフンバグを完全に修正しました。<br>
+        ※公式の白いSVGを、ミニマルな黒いサークルの中に閉じ込めることで確実に表示させます。
     </div>
     
     <label for="imgUrl">宣材写真の画像URL</label>
@@ -80,29 +80,30 @@ function generateHTML() {
         return url && url !== 'なし' && url !== 'none' && url !== '無し';
     }
 
-    // 公式のヒントコードからSVGとクラス名、構造を完全抽出
     let snsLinks = [];
 
-    // 元サイトの「SocialNavCH-iconSocial」が黒背景（fill="none"）か白文字かで機能しているため、
-    // プロフィールに馴染むようインラインで色を「#111111（黒）」に上書き。
+    // 公式が提供してくれた「完璧にシステムをすり抜けるSVGコード」をベースに構築
+    // 確実に表示させるため、小さな黒い丸（background: #111111; border-radius: 50%）を作り、その中に白いSVGをジャストサイズで配置します
+    const iconWrapperStyle = "display: inline-flex !important; align-items: center !important; justify-content: center !important; width: 28px !important; height: 28px !important; background: #111111 !important; border-radius: 50% !important; transition: transform 0.2s !important;";
+
     if (isValid(instaUrl)) {
-        snsLinks.push(`<a href="${instaUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="margin: 0 !important; padding: 0 !important; display: inline-flex;"><div class="SocialNavCH-iconSocial" style="width: 24px; height: 24px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.8025C14.67 3.8025 14.9867 3.8125 16.0417 3.86083C18.7517 3.98417 20.0175 5.27 20.1408 7.96C20.1892 9.01417 20.1983 9.33083 20.1983 12.0008C20.1983 14.6717 20.1883 14.9875 20.1408 16.0417C20.0167 18.7292 18.7542 20.0175 16.0417 20.1408C14.9867 20.1892 14.6717 20.1992 12 20.1992C9.33 20.1992 9.01333 20.1892 7.95917 20.1408C5.2425 20.0167 3.98333 18.725 3.86 16.0408C3.81167 14.9867 3.80167 14.6708 3.80167 12C3.80167 9.33 3.8125 9.01417 3.86 7.95917C3.98417 5.27 5.24667 3.98333 7.95917 3.86C9.01417 3.8125 9.33 3.8025 12 3.8025ZM12 2C9.28417 2 8.94417 2.01167 7.8775 2.06C4.24583 2.22667 2.2275 4.24167 2.06083 7.87667C2.01167 8.94417 2 9.28417 2 12C2 14.7158 2.01167 15.0567 2.06 16.1233C2.22667 19.755 4.24167 21.7733 7.87667 21.94C8.94417 21.9883 9.28417 22 12 22C14.7158 22 15.0567 21.9883 16.1233 21.94C19.7517 21.7733 21.775 19.7583 21.9392 16.1233C21.9883 15.0567 22 14.7158 22 12C22 9.28417 21.9883 8.94417 21.94 7.8775C21.7767 4.24917 19.7592 2.2275 16.1242 2.06083C15.0567 2.01167 14.7158 2 12 2V2ZM12 6.865C9.16417 6.865 6.865 9.16417 6.865 12C6.865 14.8358 9.16417 17.1358 12 17.1358C14.8358 17.1358 17.135 14.8367 17.135 12C17.135 9.16417 14.8358 6.865 12 6.865ZM12 15.3333C10.1592 15.3333 8.66667 13.8417 8.66667 12C8.66667 10.1592 10.1592 8.66667 12 8.66667C13.8408 8.66667 15.3333 10.1592 15.3333 12C15.3333 13.8417 13.8408 15.3333 12 15.3333ZM17.3383 5.4625C16.675 5.4625 16.1375 6 16.1375 6.6625C16.1375 7.325 16.675 7.8625 17.3383 7.8625C18.0008 7.8625 18.5375 7.325 18.5375 6.6625C18.5375 6 18.0008 5.4625 17.3383 5.4625Z" fill="%23111111"></path></svg></div></a>`);
+        snsLinks.push(`<a href="${instaUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="${iconWrapperStyle}" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><div class="SocialNavCH-iconSocial" style="width: 16px; height: 16px; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 !important;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;"><path d="M12 3.8025C14.67 3.8025 14.9867 3.8125 16.0417 3.86083C18.7517 3.98417 20.0175 5.27 20.1408 7.96C20.1892 9.01417 20.1983 9.33083 20.1983 12.0008C20.1983 14.6717 20.1883 14.9875 20.1408 16.0417C20.0167 18.7292 18.7542 20.0175 16.0417 20.1408C14.9867 20.1892 14.6717 20.1992 12 20.1992C9.33 20.1992 9.01333 20.1892 7.95917 20.1408C5.2425 20.0167 3.98333 18.725 3.86 16.0408C3.81167 14.9867 3.80167 14.6708 3.80167 12C3.80167 9.33 3.8125 9.01417 3.86 7.95917C3.98417 5.27 5.24667 3.98333 7.95917 3.86C9.01417 3.8125 9.33 3.8025 12 3.8025ZM12 2C9.28417 2 8.94417 2.01167 7.8775 2.06C4.24583 2.22667 2.2275 4.24167 2.06083 7.87667C2.01167 8.94417 2 9.28417 2 12C2 14.7158 2.01167 15.0567 2.06 16.1233C2.22667 19.755 4.24167 21.7733 7.87667 21.94C8.94417 21.9883 9.28417 22 12 22C14.7158 22 15.0567 21.9883 16.1233 21.94C19.7517 21.7733 21.775 19.7583 21.9392 16.1233C21.9883 15.0567 22 14.7158 22 12C22 9.28417 21.9883 8.94417 21.94 7.8775C21.7767 4.24917 19.7592 2.2275 16.1242 2.06083C15.0567 2.01167 14.7158 2 12 2V2ZM12 6.865C9.16417 6.865 6.865 9.16417 6.865 12C6.865 14.8358 9.16417 17.1358 12 17.1358C14.8358 17.1358 17.135 14.8367 17.135 12C17.135 9.16417 14.8358 6.865 12 6.865ZM12 15.3333C10.1592 15.3333 8.66667 13.8417 8.66667 12C8.66667 10.1592 10.1592 8.66667 12 8.66667C13.8408 8.66667 15.3333 10.1592 15.3333 12C15.3333 13.8417 13.8408 15.3333 12 15.3333ZM17.3383 5.4625C16.675 5.4625 16.1375 6 16.1375 6.6625C16.1375 7.325 16.675 7.8625 17.3383 7.8625C18.0008 7.8625 18.5375 7.325 18.5375 6.6625C18.5375 6 18.0008 5.4625 17.3383 5.4625Z" fill="white"></path></svg></div><span class="SocialNavCH-textSocial" style="display:none !important;">instagram</span></a>`);
     }
     if (isValid(tiktokUrl)) {
-        snsLinks.push(`<a href="${tiktokUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="margin: 0 !important; padding: 0 !important; display: inline-flex;"><div class="SocialNavCH-iconSocial" style="width: 24px; height: 24px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.4829 2C15.8129 4.83809 17.3969 6.53015 20.151 6.71015V9.90226C18.555 10.0583 17.1569 9.53624 15.5309 8.55221V14.5224C15.5309 22.1067 7.26259 24.4767 3.93848 19.0406C1.80241 15.5424 3.11045 9.40424 9.96268 9.15823V12.5243C9.44066 12.6083 8.88264 12.7403 8.37263 12.9144C6.84858 13.4304 5.98455 14.3964 6.22456 16.1005C6.68657 19.3646 12.6748 20.3306 12.1767 13.9524V2.006H15.4829V2Z" fill="%23111111"></path></svg></div></a>`);
+        snsLinks.push(`<a href="${tiktokUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="${iconWrapperStyle}" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><div class="SocialNavCH-iconSocial" style="width: 14px; height: 14px; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 !important;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.4829 2C15.8129 4.83809 17.3969 6.53015 20.151 6.71015V9.90226C18.555 10.0583 17.1569 9.53624 15.5309 8.55221V14.5224C15.5309 22.1067 7.26259 24.4767 3.93848 19.0406C1.80241 15.5424 3.11045 9.40424 9.96268 9.15823V12.5243C9.44066 12.6083 8.88264 12.7403 8.37263 12.9144C6.84858 13.4304 5.98455 14.3964 6.22456 16.1005C6.68657 19.3646 12.6748 20.3306 12.1767 13.9524V2.006H15.4829V2Z" fill="white"></path></svg></div><span class="SocialNavCH-textSocial" style="display:none !important;">tiktok</span></a>`);
     }
     if (isValid(twitterUrl)) {
-        snsLinks.push(`<a href="${twitterUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="margin: 0 !important; padding: 0 !important; display: inline-flex;"><div class="SocialNavCH-iconSocial" style="width: 24px; height: 24px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5222 10.7749L19.4785 4H18.0671L12.8952 9.88256L8.76437 4H4L10.2466 12.8955L4 20H5.41155L10.8732 13.7878L15.2356 20H20L13.5218 10.7749H13.5222ZM11.5889 12.9738L10.956 12.0881L5.92015 5.03974H8.0882L12.1522 10.728L12.7851 11.6137L18.0677 19.0075H15.8997L11.5889 12.9742V12.9738Z" fill="%23111111"></path></svg></div></a>`);
+        snsLinks.push(`<a href="${twitterUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="${iconWrapperStyle}" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><div class="SocialNavCH-iconSocial" style="width: 14px; height: 14px; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 !important;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;"><path d="M13.5222 10.7749L19.4785 4H18.0671L12.8952 9.88256L8.76437 4H4L10.2466 12.8955L4 20H5.41155L10.8732 13.7878L15.2356 20H20L13.5218 10.7749H13.5222ZM11.5889 12.9738L10.956 12.0881L5.92015 5.03974H8.0882L12.1522 10.728L12.7851 11.6137L18.0677 19.0075H15.8997L11.5889 12.9742V12.9738Z" fill="white"></path></svg></div><span class="SocialNavCH-textSocial" style="display:none !important;">X(旧Twitter)</span></a>`);
     }
-    // YouTubeのみヒントになかったため、公式と同じ線幅・色合いをエミュレートした安全なSVGをブレンド
+    // YouTube
     if (isValid(youtubeUrl)) {
-        snsLinks.push(`<a href="${youtubeUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="margin: 0 !important; padding: 0 !important; display: inline-flex;"><div class="SocialNavCH-iconSocial" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="%23111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:100%;"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="%23111111"></polygon></svg></div></a>`);
+        snsLinks.push(`<a href="${youtubeUrl}" target="_blank" rel="noreferrer" class="SocialNavCH-linkSocial" style="${iconWrapperStyle}" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><div class="SocialNavCH-iconSocial" style="width: 16px; height: 16px; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 !important;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:100%;"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="white"></polygon></svg></div><span class="SocialNavCH-textSocial" style="display:none !important;">youtube</span></a>`);
     }
 
-    // 公式のSNSコンテナのクラスを密輸して横並びを再現
+    // 横並び用コンテナ（SocialNavCH-socialNavクラスを完全にハック）
     let iconAreaHTML = '';
     if (snsLinks.length > 0) {
-        iconAreaHTML = `<div class="SocialNavCH-socialNav" style="display: flex !important; align-items: center !important; gap: 12px !important; margin-left: auto; padding-left: 15px; background: transparent !important; box-shadow: none !important; border: none !important; margin-bottom: 4px;">\n${snsLinks.join('\n')}\n</div>`;
+        iconAreaHTML = `<div class="SocialNavCH-socialNav" style="display: inline-flex !important; align-items: center !important; gap: 10px !important; margin-left: auto !important; padding: 0 !important; background: transparent !important; box-shadow: none !important; border: none !important; margin-bottom: 2px !important; min-width: auto !important; width: auto !important;">\n${snsLinks.join('\n')}\n</div>`;
     }
 
     const code = `<div class="custom-font" style="max-width: 900px; margin: 30px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 20px; box-sizing: border-box;">
