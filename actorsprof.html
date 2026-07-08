@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1発ペースト！プロフィールHTMLジェネレーター</title>
+    <title>プロフィール自動生成2.0</title>
     <style>
         body { font-family: sans-serif; background: #f4f5f7; padding: 20px; color: #333; }
         .container { max-width: 700px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -22,14 +22,14 @@
 <body>
 
 <div class="container">
-    <h1>1発ペースト！プロフィールHTMLジェネレーター</h1>
-    <div class="subtitle">※メモ帳などから以下の順番のまま、1つのボックスに丸ごと貼り付けてください。</div>
+    <h1>SNS有無自動判定！プロフィールHTMLジェネレーター</h1>
+    <div class="subtitle">※Instagramがない場合は、5行目に「なし」と入力してください。ボタンが自動消去されます。</div>
     
-    <label for="imgUrl">宣材写真の画像URL（※ここだけ単体入力）</label>
+    <label for="imgUrl">宣材写真の画像URL</label>
     <input type="text" id="imgUrl" value="https://cdn.stardust.co.jp/wp-content/uploads/2022/05/kitajimamisaki_sen04-367x550.jpg">
 
     <label for="bulkInput">プロフィールデータ（一括ペーストエリア）</label>
-    <textarea id="bulkInput" placeholder="北島 岬&#10;Misaki Kitajima&#10;2007.08.06 (18歳)&#10;A&#10;https://www.instagram.com/misaki_kitajima_official/&#10;https://www.stardust.co.jp/talent/section3/kitajimamisaki/&#10;12年間水泳を習っており、得意種目は自由形。空手・陸上・バドミントンなど多くのスポーツ経験があります。&#10;また、ピアノを5年間習っており、あらゆる楽曲の演奏が可能です。&#10;表現者として、大きな目標を掲げており、常に高みを目指します。"></textarea>
+    <textarea id="bulkInput" placeholder="北島 岬&#10;Misaki Kitajima&#10;2007.08.06 (18歳)&#10;A&#10;なし&#10;https://www.stardust.co.jp/talent/section3/kitajimamisaki/&#10;12年間水泳を習っており、得意種目は自由形。空手・陸上・バドミントンなど多くのスポーツ経験があります。&#10;また、ピアノを5年間習っており、あらゆる楽曲の演奏が可能です。&#10;表現者として、大きな目標を掲げており、常に高みを目指します。"></textarea>
 
     <button onclick="generateHTML()">HTMLコードを生成する</button>
 
@@ -50,24 +50,20 @@ function generateHTML() {
         return;
     }
 
-    // 改行でバラバラに分解する
     const lines = bulkRaw.split('\n').map(line => line.trim());
 
-    // 上から順番に固定の項目を抜き出す
     const name = lines[0] || '名前未入力';
     const roma = lines[1] || 'NAME';
     const birthday = lines[2] || '----.--.--';
     const blood = lines[3] || '-';
-    const instaUrl = lines[4] || '#';
+    const instaUrl = lines[4] || '';
     const profileUrl = lines[5] || '#';
 
-    // 7行目以降はすべて「アピールポイント」として処理する
+    // アピールポイントの処理
     const appealLines = lines.slice(6);
     let appealHTML = '';
-    
     appealLines.forEach((line, index) => {
         if (line !== '') {
-            // アピールポイントの最後の行だけ太字にする
             if (index === appealLines.length - 1) {
                 appealHTML += `<p style="margin: 0; font-weight: bold; color: #111111; font-size: 15px;">${line}</p>\n`;
             } else {
@@ -76,11 +72,27 @@ function generateHTML() {
         }
     });
 
-    // ベースとなった完璧なHTML構造に流し込み
+    // ★ボタンエリアの条件分岐（5行目が空、または「なし」「none」ならインスタボタンを除外）
+    let buttonHTML = '';
+    const hasInsta = instaUrl && instaUrl !== 'なし' && instaUrl !== 'none' && instaUrl !== 'なし';
+
+    if (hasInsta) {
+        // 両方ある場合（縦並び・幅280px）
+        buttonHTML = `<div style="display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 280px;">
+<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 12px 0; border-radius: 0px; letter-spacing: 0.2em; background-color: #111111; color: #ffffff; font-size: 12px; border: 1px solid #111111; box-sizing: border-box;" href="${instaUrl}" target="_blank" rel="noopener">INSTAGRAM </a>
+<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 12px 0; border-radius: 0px; letter-spacing: 0.1em; background-color: #ffffff; color: #111111; font-size: 12px; border: 1px solid #111111; box-sizing: border-box;" href="${profileUrl}" target="_blank" rel="noopener">OFFICIAL PROFILE </a>
+</div>`;
+    } else {
+        // 公式プロフボタンのみの場合（単体で美しく収まるように横幅を調整）
+        buttonHTML = `<div style="display: flex; width: 100%; max-width: 280px;">
+<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 14px 0; width: 100%; border-radius: 0px; letter-spacing: 0.1em; background-color: #ffffff; color: #111111; font-size: 12px; border: 1px solid #111111; box-sizing: border-box;" href="${profileUrl}" target="_blank" rel="noopener">OFFICIAL PROFILE </a>
+</div>`;
+    }
+
     const code = `<div class="custom-font" style="max-width: 900px; margin: 30px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 20px; box-sizing: border-box;">
 <div class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-6" style="align-items: center; display: flex; flex-wrap: wrap;">
-<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 CustomGrid-md-5" style="box-sizing: border-box; text-align: center; flex: 1 1 340px; max-width: 100%;"><img style="width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; object-fit: cover;" src="${imgUrl}" alt="${name}"></div>
-<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 CustomGrid-md-7" style="box-sizing: border-box; padding: 20px; flex: 1 1 400px; max-width: 100%;">
+<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5" style="box-sizing: border-box; text-align: center; flex: 1 1 340px; max-width: 100%;"><img style="width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; object-fit: cover;" src="${imgUrl}" alt="${name}"></div>
+<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-7" style="box-sizing: border-box; padding: 20px; flex: 1 1 400px; max-width: 100%;">
 <div style="margin-bottom: 24px; border-bottom: 2px solid #111111; padding-bottom: 15px;">
 <h1 style="margin: 0 0 4px 0; font-size: 36px; font-weight: bold; color: #111111; letter-spacing: 0.05em;">${name}</h1>
 <p style="margin: 0; font-size: 13px; color: #666666; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase;">${roma}</p>
@@ -92,11 +104,7 @@ function generateHTML() {
 <div style="font-size: 14px; line-height: 1.8; color: #333333; margin-bottom: 30px; border-top: 1px solid #e0e0e0; padding-top: 20px; box-sizing: border-box;">
 <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 15px; color: #111111; letter-spacing: 0.05em;">【アピールポイント】</p>
 ${appealHTML}</div>
-<div style="display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 280px;">
-<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 12px 0; border-radius: 0px; letter-spacing: 0.2em; background-color: #111111; color: #ffffff; font-size: 12px; border: 1px solid #111111; box-sizing: border-box;" href="${instaUrl}" target="_blank" rel="noopener">INSTAGRAM </a>
-<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 12px 0; border-radius: 0px; letter-spacing: 0.1em; background-color: #ffffff; color: #111111; font-size: 12px; border: 1px solid #111111; box-sizing: border-box;" href="${profileUrl}" target="_blank" rel="noopener">OFFICIAL PROFILE </a>
-</div>
-</div>
+${buttonHTML}</div>
 </div>
 </div>`;
 
