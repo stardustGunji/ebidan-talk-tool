@@ -3,48 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プロフィールHTMLジェネレーター</title>
+    <title>1発ペースト！プロフィールHTMLジェネレーター</title>
     <style>
         body { font-family: sans-serif; background: #f4f5f7; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h1 { font-size: 20px; margin-bottom: 20px; border-bottom: 2px solid #111; padding-bottom: 10px; }
-        label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; color: #555; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        textarea { height: 100px; resize: vertical; }
-        button { width: 100%; padding: 12px; background: #111; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { font-size: 20px; margin-bottom: 5px; border-bottom: 2px solid #111; padding-bottom: 10px; }
+        .subtitle { font-size: 12px; color: #666; margin-bottom: 20px; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; color: #111; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; font-family: monospace; }
+        textarea { height: 280px; resize: vertical; }
+        button { width: 100%; padding: 14px; background: #111; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         button:hover { background: #333; }
-        .result-area { margin-top: 25px; }
+        .result-area { margin-top: 25px; border-top: 2px dashed #ccc; padding-top: 20px; }
         .result-area label { color: #007bff; }
+        #output { height: 150px; background: #f8f9fa; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>プロフィールHTMLジェネレーター</h1>
+    <h1>1発ペースト！プロフィールHTMLジェネレーター</h1>
+    <div class="subtitle">※メモ帳などから以下の順番のまま、1つのボックスに丸ごと貼り付けてください。</div>
     
-    <label for="imgUrl">宣材写真の画像URL</label>
+    <label for="imgUrl">宣材写真の画像URL（※ここだけ単体入力）</label>
     <input type="text" id="imgUrl" value="https://cdn.stardust.co.jp/wp-content/uploads/2022/05/kitajimamisaki_sen04-367x550.jpg">
 
-    <label for="name">名前（例：北島 岬）</label>
-    <input type="text" id="name" placeholder="北島 岬">
-
-    <label for="roma">ローマ字（例：Misaki Kitajima）</label>
-    <input type="text" id="roma" placeholder="Misaki Kitajima">
-
-    <label for="birthday">生年月日（例：2007.08.06 (18歳)）</label>
-    <input type="text" id="birthday" placeholder="2007.08.06 (18歳)">
-
-    <label for="blood">血液型（例：A）</label>
-    <input type="text" id="blood" placeholder="A">
-
-    <label for="appeal">アピールポイント（改行おきに入力）</label>
-    <textarea id="appeal" placeholder="12年間水泳を習っており、得意種目は自由形。&#10;ピアノを5年間習っており、あらゆる楽曲の演奏が可能です。&#10;常に高みを目指します。"></textarea>
-
-    <label for="instaUrl">InstagramのリンクURL</label>
-    <input type="text" id="instaUrl" placeholder="https://www.instagram.com/...">
-
-    <label for="profileUrl">公式プロフィールのリンクURL</label>
-    <input type="text" id="profileUrl" placeholder="https://www.stardust.co.jp/talent/...">
+    <label for="bulkInput">プロフィールデータ（一括ペーストエリア）</label>
+    <textarea id="bulkInput" placeholder="北島 岬&#10;Misaki Kitajima&#10;2007.08.06 (18歳)&#10;A&#10;https://www.instagram.com/misaki_kitajima_official/&#10;https://www.stardust.co.jp/talent/section3/kitajimamisaki/&#10;12年間水泳を習っており、得意種目は自由形。空手・陸上・バドミントンなど多くのスポーツ経験があります。&#10;また、ピアノを5年間習っており、あらゆる楽曲の演奏が可能です。&#10;表現者として、大きな目標を掲げており、常に高みを目指します。"></textarea>
 
     <button onclick="generateHTML()">HTMLコードを生成する</button>
 
@@ -58,35 +43,44 @@
 <script>
 function generateHTML() {
     const imgUrl = document.getElementById('imgUrl').value || 'https://via.placeholder.com/367x550';
-    const name = document.getElementById('name').value || '名前未入力';
-    const roma = document.getElementById('roma').value || 'NAME';
-    const birthday = document.getElementById('birthday').value || '----.--.--';
-    const blood = document.getElementById('blood').value || '-';
-    const instaUrl = document.getElementById('instaUrl').value || '#';
-    const profileUrl = document.getElementById('profileUrl').value || '#';
+    const bulkRaw = document.getElementById('bulkInput').value.trim();
     
-    // アピールポイントのテキストを改行ごとにPタグで囲む処理
-    const appealRaw = document.getElementById('appeal').value;
-    let appealHTML = '';
-    if (appealRaw) {
-        const lines = appealRaw.split('\n');
-        lines.forEach((line, index) => {
-            if (line.trim() !== '') {
-                if (index === lines.length - 1 || lines[index + 1]?.trim() === '') {
-                    // 最後の行は太字にする仕様を継承
-                    appealHTML += `<p style="margin: 0; font-weight: bold; color: #111111; font-size: 15px;">${line}</p>\n`;
-                } else {
-                    appealHTML += `<p style="margin: 0 0 8px 0;">${line}</p>\n`;
-                }
-            }
-        });
+    if (!bulkRaw) {
+        alert('データが入力されていません！');
+        return;
     }
+
+    // 改行でバラバラに分解する
+    const lines = bulkRaw.split('\n').map(line => line.trim());
+
+    // 上から順番に固定の項目を抜き出す
+    const name = lines[0] || '名前未入力';
+    const roma = lines[1] || 'NAME';
+    const birthday = lines[2] || '----.--.--';
+    const blood = lines[3] || '-';
+    const instaUrl = lines[4] || '#';
+    const profileUrl = lines[5] || '#';
+
+    // 7行目以降はすべて「アピールポイント」として処理する
+    const appealLines = lines.slice(6);
+    let appealHTML = '';
+    
+    appealLines.forEach((line, index) => {
+        if (line !== '') {
+            // アピールポイントの最後の行だけ太字にする
+            if (index === appealLines.length - 1) {
+                appealHTML += `<p style="margin: 0; font-weight: bold; color: #111111; font-size: 15px;">${line}</p>\n`;
+            } else {
+                appealHTML += `<p style="margin: 0 0 8px 0;">${line}</p>\n`;
+            }
+        }
+    });
 
     // ベースとなった完璧なHTML構造に流し込み
     const code = `<div class="custom-font" style="max-width: 900px; margin: 30px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 20px; box-sizing: border-box;">
 <div class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-6" style="align-items: center; display: flex; flex-wrap: wrap;">
-<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5" style="box-sizing: border-box; text-align: center; flex: 1 1 340px; max-width: 100%;"><img style="width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; object-fit: cover;" src="${imgUrl}" alt="${name}"></div>
-<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-7" style="box-sizing: border-box; padding: 20px; flex: 1 1 400px; max-width: 100%;">
+<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 CustomGrid-md-5" style="box-sizing: border-box; text-align: center; flex: 1 1 340px; max-width: 100%;"><img style="width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; object-fit: cover;" src="${imgUrl}" alt="${name}"></div>
+<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 CustomGrid-md-7" style="box-sizing: border-box; padding: 20px; flex: 1 1 400px; max-width: 100%;">
 <div style="margin-bottom: 24px; border-bottom: 2px solid #111111; padding-bottom: 15px;">
 <h1 style="margin: 0 0 4px 0; font-size: 36px; font-weight: bold; color: #111111; letter-spacing: 0.05em;">${name}</h1>
 <p style="margin: 0; font-size: 13px; color: #666666; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase;">${roma}</p>
