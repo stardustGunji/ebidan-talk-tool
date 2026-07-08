@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>画像HTMLジェネレーター</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background-color: #f9f9f9; }
+    textarea { width: 100%; box-sizing: border-box; margin-bottom: 15px; padding: 10px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #007BFF; color: white; border: none; border-radius: 5px; }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+
+  <h2>1. 画像リンクを1行ずつ貼り付けてください</h2>
+  <textarea id="links" rows="10" placeholder="https://...&#10;https://..."></textarea>
+  
+  <button onclick="generateHTML()">コードを生成</button>
+
+  <h2>2. 生成されたHTML（コピーして使ってください）</h2>
+  <textarea id="output" rows="15" readonly></textarea>
+
+  <script>
+    function generateHTML() {
+      const linksText = document.getElementById('links').value;
+      // 改行で分割し、空白行を削除
+      const links = linksText.split('\n').map(l => l.trim()).filter(l => l !== '');
+      
+      if(links.length === 0) {
+        alert("リンクを入力してください！");
+        return;
+      }
+
+      // 共通のヘッダー部分
+      let html = `<a href="https://stardust-web.com/ebidan-actors.official/s/birthday#camera">\n`;
+      html += `  <p>Aくんのメッセージはこちら</p>\n`;
+      html += `</a>\n<p>&nbsp;</p>\n\n`;
+      
+      // 表の開始（左右に4%の隙間を空けるパターン1を採用）
+      html += `<table width="100%" border="0" cellpadding="0" cellspacing="0" id="camera">\n`;
+
+      // 2個ずつループ処理
+      for (let i = 0; i < links.length; i += 2) {
+        const link1 = links[i];
+        const link2 = links[i+1];
+
+        html += `  <tr>\n`;
+        
+        // 1枚目（左側）
+        html += `    <td width="48%">\n`;
+        if (i === 0) {
+          // 最初の1枚目だけリンク付きにする
+          html += `      <a href="${link1}">\n`;
+          html += `        <img src="${link1}" alt="" width="100%">\n`;
+          html += `      </a>\n`;
+        } else {
+          html += `      <img src="${link1}" alt="" width="100%">\n`;
+        }
+        html += `    </td>\n`;
+
+        // 左右の隙間
+        html += `    <td width="4%"></td>\n`;
+
+        // 2枚目（右側）※存在する場合のみ
+        html += `    <td width="48%">\n`;
+        if (link2) {
+          html += `      <img src="${link2}" alt="" width="100%">\n`;
+        }
+        html += `    </td>\n`;
+        html += `  </tr>\n`;
+
+        // 行と行の間の隙間（最後の行以外に追加）
+        if (i + 2 < links.length) {
+          html += `  <tr height="15">\n    <td colspan="3"></td>\n  </tr>\n`;
+        }
+      }
+
+      // 表の終了
+      html += `</table>`;
+
+      // 結果を出力
+      document.getElementById('output').value = html;
+    }
+  </script>
+</body>
+</html>
+    
+</body>
+</html>
