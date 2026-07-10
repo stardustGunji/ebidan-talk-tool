@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サムネイルジェネレーター v2.3</title>
+    <title>サムネイルジェネレーター v2.4（ロック付き）</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f0f0f0; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -17,8 +17,20 @@
     </style>
 </head>
 <body>
+    <script>
+        // ⚠️ ここに設定したいパスワードを入力してください
+        const SECRET_PASS = "0717"; 
+        
+        const userInput = prompt("パスワードを入力してください");
+        if (userInput !== SECRET_PASS) {
+            alert("パスワードが違います。");
+            // パスワードが違う場合は画面を真っ白にしてここで処理を止める
+            document.body.innerHTML = "<h3 style='margin-top: 50px; color: #333;'>アクセスが制限されています</h3>";
+            throw new Error("認証失敗"); 
+        }
+    </script>
     <div class="container">
-        <h2>ニュースサムネイル生成ツール v2.3</h2>
+        <h2>ニュースサムネイル生成ツール v2.4</h2>
         <div class="controls">
             <select id="bgSelect">
                 <option value="template2.png">背景: ネイビー</option>
@@ -33,7 +45,7 @@
                 <option value="OTHER">OTHER</option>
             </select>
 
-            <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="">
+            <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="EBiDAN ACTORS OFFICIAL SITE オープン！">
             <button id="downloadBtn">画像をダウンロード</button>
         </div>
         
@@ -51,31 +63,24 @@
 
         let baseImage = new Image();
 
-        // 背景画像を読み込む関数
         function loadBackgroundImage() {
             baseImage.src = bgSelect.value;
             baseImage.onload = () => {
-                draw(); // 読み込み完了後に描画
+                draw();
             };
         }
 
-        // 入力や選択が変わるたびに再描画・再読み込み
         bgSelect.addEventListener('change', loadBackgroundImage);
         categorySelect.addEventListener('change', draw);
         textInput.addEventListener('input', draw);
 
         function draw() {
-            // キャンバスをクリアして背景画像を配置
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
 
-            // ------------------------------------------------
-            // 1. カテゴリ（左のゴールド枠）のテキスト描画
-            // ------------------------------------------------
             const category = categorySelect.value;
-            // 英語優先のCenturyフォント設定
             ctx.font = '35px "Century", sans-serif'; 
-            ctx.fillStyle = '#FFFFFF'; // 白文字
+            ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';  
             ctx.textBaseline = 'middle'; 
 
@@ -83,20 +88,15 @@
             const catY = 875; 
             ctx.fillText(category, catX, catY);
 
-            // ------------------------------------------------
-            // 2. ニュース本文（右の長い枠）のテキスト描画
-            // ------------------------------------------------
             const text = textInput.value;
-            // 英語優先のCenturyフォント設定
             ctx.font = '45px "Century", sans-serif'; 
-            ctx.fillStyle = '#000022'; // 紺〜黒文字
+            ctx.fillStyle = '#000022';
             
             const textX = 1050; 
             const textY = 875;  
             ctx.fillText(text, textX, textY);
         }
 
-        // ダウンロード機能
         downloadBtn.addEventListener('click', () => {
             const link = document.createElement('a');
             const bgName = bgSelect.value === 'template2.png' ? 'navy' : 'white';
@@ -105,7 +105,6 @@
             link.click();
         });
 
-        // 初回読み込みを実行
         loadBackgroundImage();
     </script>
 </body>
