@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サムネイルジェネレーター</title>
+    <title>サムネイルジェネレーター v2</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f0f0f0; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .controls { margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; }
-        input[type="text"] { width: 400px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .controls { margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; align-items: center; }
+        select, input[type="text"] { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="text"] { width: 350px; }
         button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #a68b44; color: white; border: none; border-radius: 4px; font-weight: bold; }
         button:hover { background-color: #8a7338; }
         canvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
@@ -17,31 +18,52 @@
 </head>
 <body>
     <div class="container">
-        <h2>ニュースサムネイル生成ツール</h2>
+        <h2>ニュースサムネイル生成ツール v2</h2>
         <div class="controls">
+            <!-- ① 背景画像のプルダウン -->
+            <select id="bgSelect">
+                <option value="template.png">背景: ネイビー</option>
+                <option value="templatewh.png">背景: ホワイト</option>
+            </select>
+            
+            <!-- ② カテゴリのプルダウン -->
+            <select id="categorySelect">
+                <option value="NEWS">NEWS</option>
+                <option value="EVENT">EVENT</option>
+                <option value="MOVIE">MOVIE</option>
+                <option value="SPECIAL">SPECIAL</option>
+                <option value="OTHER">OTHER</option>
+            </select>
+
             <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="EBiDAN ACTORS OFFICAL SITE オープン！">
             <button id="downloadBtn">画像をダウンロード</button>
         </div>
         
         <canvas id="myCanvas" width="1920" height="1080"></canvas>
-        <p class="note">※テキストを入力するとリアルタイムで画像に反映されます。</p>
+        <p class="note">※設定を変更するとリアルタイムで画像に反映されます。</p>
     </div>
 
     <script>
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
+        const bgSelect = document.getElementById('bgSelect');
+        const categorySelect = document.getElementById('categorySelect');
         const textInput = document.getElementById('newsText');
         const downloadBtn = document.getElementById('downloadBtn');
 
-        // ベースとなる「もじなし」画像を読み込む
-        const baseImage = new Image();
-        baseImage.src = 'template.png'; // 画像ファイル名
+        let baseImage = new Image();
 
-        baseImage.onload = () => {
-            draw(); // 画像が読み込まれたら最初の描画を行う
-        };
+        // 背景画像を読み込む関数
+        function loadBackgroundImage() {
+            baseImage.src = bgSelect.value;
+            baseImage.onload = () => {
+                draw(); // 読み込み完了後に描画
+            };
+        }
 
-        // テキストボックスの入力が変わるたびに再描画
+        // 入力や選択が変わるたびに再描画・再読み込み
+        bgSelect.addEventListener('change', loadBackgroundImage);
+        categorySelect.addEventListener('change', draw);
         textInput.addEventListener('input', draw);
 
         function draw() {
@@ -49,29 +71,46 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
 
-            // テキストのスタイル設定
+            // ------------------------------------------------
+            // 1. カテゴリ（左のゴールド枠）のテキスト描画
+            // ------------------------------------------------
+            const category = categorySelect.value;
+            ctx.font = '35px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; // NEWS等のフォントサイズ
+            ctx.fillStyle = '#FFFFFF'; // 白文字
+            ctx.textAlign = 'center';  
+            ctx.textBaseline = 'middle'; 
+
+            // ⚠️カテゴリを描画する位置 (X座標, Y座標)
+            // ゴールドの枠のド真ん中になるように数値を微調整してください
+            const catX = 290; 
+            const catY = 875; 
+            ctx.fillText(category, catX, catY);
+
+            // ------------------------------------------------
+            // 2. ニュース本文（右の長い枠）のテキスト描画
+            // ------------------------------------------------
             const text = textInput.value;
-            // ⚠️フォントサイズと種類。画像の解像度に合わせて微調整してください
             ctx.font = '45px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; 
-            ctx.fillStyle = '#000022'; // 文字色（見本に合わせた濃紺〜黒）
-            ctx.textAlign = 'center';  // 基準を中央にする
-            ctx.textBaseline = 'middle'; // 縦の基準も中央にする
-
+            ctx.fillStyle = '#000022'; // 紺〜黒文字
+            
             // ⚠️テキストを描画する位置 (X座標, Y座標)
-            // 実際の「もじなし.png」の白い枠線のド真ん中になるように数値を調整してください
-            const x = 1050; // 左から何ピクセルか
-            const y = 875;  // 上から何ピクセルか
-
-            ctx.fillText(text, x, y);
+            const textX = 1050; 
+            const textY = 875;  
+            ctx.fillText(text, textX, textY);
         }
 
         // ダウンロード機能
         downloadBtn.addEventListener('click', () => {
             const link = document.createElement('a');
-            link.download = 'news_thumbnail.png'; // ダウンロード時のファイル名
+            // ファイル名に背景色とカテゴリ名を含める
+            const bgName = bgSelect.value === 'template.png' ? 'navy' : 'white';
+            link.download = `thumbnail_${bgName}_${categorySelect.value}.png`; 
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
+
+        // 初回読み込みを実行
+        loadBackgroundImage();
     </script>
 </body>
 </html>
