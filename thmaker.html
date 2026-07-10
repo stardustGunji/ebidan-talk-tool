@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サムネイルジェネレーター v3</title>
+    <title>サムネイルジェネレーター v2.1</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f0f0f0; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -18,15 +18,13 @@
 </head>
 <body>
     <div class="container">
-        <h2>ニュースサムネイル生成ツール v2</h2>
+        <h2>ニュースサムネイル生成ツール v2.1</h2>
         <div class="controls">
-            <!-- ① 背景画像のプルダウン -->
             <select id="bgSelect">
-                <option value="template.png">背景: ネイビー</option>
-                <option value="templatewh.png">背景: ホワイト</option>
+                <option value="template2.png">背景: ネイビー</option>
+                <option value="templatewh2.png">背景: ホワイト</option>
             </select>
             
-            <!-- ② カテゴリのプルダウン -->
             <select id="categorySelect">
                 <option value="NEWS">NEWS</option>
                 <option value="EVENT">EVENT</option>
@@ -75,13 +73,11 @@
             // 1. カテゴリ（左のゴールド枠）のテキスト描画
             // ------------------------------------------------
             const category = categorySelect.value;
-            ctx.font = '35px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; // NEWS等のフォントサイズ
+            ctx.font = '35px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; 
             ctx.fillStyle = '#FFFFFF'; // 白文字
             ctx.textAlign = 'center';  
             ctx.textBaseline = 'middle'; 
 
-            // ⚠️カテゴリを描画する位置 (X座標, Y座標)
-            // ゴールドの枠のド真ん中になるように数値を微調整してください
             const catX = 290; 
             const catY = 875; 
             ctx.fillText(category, catX, catY);
@@ -93,7 +89,6 @@
             ctx.font = '45px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; 
             ctx.fillStyle = '#000022'; // 紺〜黒文字
             
-            // ⚠️テキストを描画する位置 (X座標, Y座標)
             const textX = 1050; 
             const textY = 875;  
             ctx.fillText(text, textX, textY);
@@ -102,8 +97,8 @@
         // ダウンロード機能
         downloadBtn.addEventListener('click', () => {
             const link = document.createElement('a');
-            // ファイル名に背景色とカテゴリ名を含める
-            const bgName = bgSelect.value === 'template.png' ? 'navy' : 'white';
+            // ファイル名判定の条件も変更済です
+            const bgName = bgSelect.value === 'template2.png' ? 'navy' : 'white';
             link.download = `thumbnail_${bgName}_${categorySelect.value}.png`; 
             link.href = canvas.toDataURL('image/png');
             link.click();
