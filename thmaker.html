@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サムネイルジェネレーター v2.1</title>
+    <title>サムネイルジェネレーター v2.2</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f0f0f0; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -18,13 +18,15 @@
 </head>
 <body>
     <div class="container">
-        <h2>ニュースサムネイル生成ツール v2.1</h2>
+        <h2>ニュースサムネイル生成ツール v2.2</h2>
         <div class="controls">
+            <!-- ① 背景画像のプルダウン -->
             <select id="bgSelect">
                 <option value="template2.png">背景: ネイビー</option>
                 <option value="templatewh2.png">背景: ホワイト</option>
             </select>
             
+            <!-- ② カテゴリのプルダウン -->
             <select id="categorySelect">
                 <option value="NEWS">NEWS</option>
                 <option value="EVENT">EVENT</option>
@@ -33,7 +35,7 @@
                 <option value="OTHER">OTHER</option>
             </select>
 
-            <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="EBiDAN ACTORS OFFICAL SITE オープン！">
+            <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="EBiDAN ACTORS OFFICIAL SITE オープン！ Centuryフォント対応！">
             <button id="downloadBtn">画像をダウンロード</button>
         </div>
         
@@ -73,20 +75,34 @@
             // 1. カテゴリ（左のゴールド枠）のテキスト描画
             // ------------------------------------------------
             const category = categorySelect.value;
-            ctx.font = '35px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; 
+            // ⚠️英語優先のCenturyフォント設定。日本語は代替されます。
+            ctx.font = '35px "Century", sans-serif'; 
             ctx.fillStyle = '#FFFFFF'; // 白文字
             ctx.textAlign = 'center';  
             ctx.textBaseline = 'middle'; 
 
             const catX = 290; 
             const catY = 875; 
+
+            // ゴールドの枠を少し明るく、太くする調整（ネイビー背景のみ）
+            if (bgSelect.value === 'template2.png') { // ネイビー背景の場合
+                ctx.strokeStyle = '#D4AF37'; // より明るく、鮮やかなゴールド
+                ctx.lineWidth = 4; // 枠線を少し太く
+            } else { // ホワイト背景の場合
+                ctx.strokeStyle = '#a68b44'; // 元のゴールド
+                ctx.lineWidth = 2; // 元の太さ
+            }
+            // 枠線を描画（元の画像にある枠線の上に重ねて描画）
+            ctx.strokeRect(catX - 100, catY - 50, 200, 100); 
+
             ctx.fillText(category, catX, catY);
 
             // ------------------------------------------------
             // 2. ニュース本文（右の長い枠）のテキスト描画
             // ------------------------------------------------
             const text = textInput.value;
-            ctx.font = '45px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; 
+            // ⚠️英語優先のCenturyフォント設定。日本語は代替されます。
+            ctx.font = '45px "Century", sans-serif'; 
             ctx.fillStyle = '#000022'; // 紺〜黒文字
             
             const textX = 1050; 
@@ -97,9 +113,8 @@
         // ダウンロード機能
         downloadBtn.addEventListener('click', () => {
             const link = document.createElement('a');
-            // ファイル名判定の条件も変更済です
             const bgName = bgSelect.value === 'template2.png' ? 'navy' : 'white';
-            link.download = `thumbnail_${bgName}_${categorySelect.value}.png`; 
+            link.download = `thumbnail_${bgName}_${categorySelect.value}_century.png`; 
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
