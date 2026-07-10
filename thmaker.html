@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サムネイルジェネレーター</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .controls { margin-bottom: 20px; display: flex; justify-content: center; gap: 10px; }
+        input[type="text"] { width: 400px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #a68b44; color: white; border: none; border-radius: 4px; font-weight: bold; }
+        button:hover { background-color: #8a7338; }
+        canvas { border: 1px solid #ccc; max-width: 100%; height: auto; }
+        .note { font-size: 12px; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ニュースサムネイル生成ツール</h2>
+        <div class="controls">
+            <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="EBiDAN ACTORS OFFICAL SITE オープン！">
+            <button id="downloadBtn">画像をダウンロード</button>
+        </div>
+        
+        <canvas id="myCanvas" width="1920" height="1080"></canvas>
+        <p class="note">※テキストを入力するとリアルタイムで画像に反映されます。</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const textInput = document.getElementById('newsText');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // ベースとなる「もじなし」画像を読み込む
+        const baseImage = new Image();
+        baseImage.src = 'template.png'; // 画像ファイル名
+
+        baseImage.onload = () => {
+            draw(); // 画像が読み込まれたら最初の描画を行う
+        };
+
+        // テキストボックスの入力が変わるたびに再描画
+        textInput.addEventListener('input', draw);
+
+        function draw() {
+            // キャンバスをクリアして背景画像を配置
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+
+            // テキストのスタイル設定
+            const text = textInput.value;
+            // ⚠️フォントサイズと種類。画像の解像度に合わせて微調整してください
+            ctx.font = '45px "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif'; 
+            ctx.fillStyle = '#000022'; // 文字色（見本に合わせた濃紺〜黒）
+            ctx.textAlign = 'center';  // 基準を中央にする
+            ctx.textBaseline = 'middle'; // 縦の基準も中央にする
+
+            // ⚠️テキストを描画する位置 (X座標, Y座標)
+            // 実際の「もじなし.png」の白い枠線のド真ん中になるように数値を調整してください
+            const x = 1050; // 左から何ピクセルか
+            const y = 875;  // 上から何ピクセルか
+
+            ctx.fillText(text, x, y);
+        }
+
+        // ダウンロード機能
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'news_thumbnail.png'; // ダウンロード時のファイル名
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
