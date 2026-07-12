@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【ドット操作＋トリミング防止版】ジェネレーター</title>
+    <title>【ドットデザイン洗練版】プロフィールジェネレーター</title>
 </head>
 <body style="font-family: sans-serif; background-color: #f4f5f7; padding: 20px; color: #333333; margin: 0;">
 
 <div style="max-width: 750px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); box-sizing: border-box;">
     
-    <h1 style="font-size: 20px; margin: 0 0 5px 0; border-bottom: 2px solid #111111; padding-bottom: 10px;">【ドット操作＋トリミング防止版】ジェネレーター</h1>
+    <h1 style="font-size: 20px; margin: 0 0 5px 0; border-bottom: 2px solid #111111; padding-bottom: 10px;">【ドットデザイン洗練版】プロフィールジェネレーター</h1>
     <div style="font-size: 12px; color: #666666; margin-bottom: 20px; line-height: 1.5;">
-        ※画像がトリミングされず全体が見えるように修正しました。<br>
-        ※PCでも操作できるように、画像の下にクリックできる「●」を追加しました。
+        ※PC用の切り替えドットを、カルーセル公式に近い洗練されたデザインに修正しました。<br>
+        ※下部の野暮ったい案内文を削除し、スッキリさせました。
     </div>
     
     <label style="display: block; margin-top: 15px; font-weight: bold; font-size: 14px; color: #111111;">宣材写真の画像URL（複数ある場合は改行して入力）</label>
@@ -80,39 +80,35 @@ function generateHTML() {
     buttons.push(`<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 12px 0; border-radius: 0px; letter-spacing: 0.1em; background-color: #ffffff; color: #111111; font-size: 12px; border: 1px solid #111111; box-sizing: border-box;" href="${profileUrl}" target="_blank" rel="noopener">OFFICIAL PROFILE</a>`);
 
 
-    // 画像エリアの生成（PC用ドットナビ＆トリミング防止対応）
+    // 画像エリアの生成（PC用ドットナビデザイン改修）
     let imageAreaHTML = '';
 
     if (imgUrls.length === 1) {
-        // 1枚のみの場合は object-fit: contain; でトリミングを防ぐ
+        // 1枚のみ
         imageAreaHTML = `<img style="width: 100%; max-width: 360px; height: auto; display: block; object-fit: contain; margin: 0 auto 0 auto;" src="${imgUrls[0]}" alt="${name}">`;
     } else {
         // 複数枚の場合
-        // idの重複を防ぐためにランダムな文字列を生成
         const uniqueId = 'slide_' + Math.floor(Math.random() * 10000);
         
-        // 画像はトリミングされないように object-fit: contain; を指定し、高さを統一するために薄い背景色(#f4f5f7)を敷く
         const slidesHTML = imgUrls.map((url, i) => 
             `<img id="${uniqueId}_${i}" style="flex: 0 0 100%; width: 100%; max-width: 360px; height: 480px; display: block; object-fit: contain; scroll-snap-align: start; margin: 0 auto; background-color: #f4f5f7;" src="${url}" alt="${name}">`
         ).join('\n');
         
-        // PCクリック用の「●」ドットリンクを生成（aタグのページ内ジャンプ機能を利用）
+        // PCクリック用のドットリンクを生成（テキストの「●」ではなく、CSSで描画した綺麗な丸に変更）
         const dotsHTML = imgUrls.map((url, i) => 
-            `<a href="#${uniqueId}_${i}" style="text-decoration: none; color: #888888; font-size: 24px; line-height: 1; margin: 0 6px; display: inline-block;">●</a>`
+            `<a href="#${uniqueId}_${i}" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #bbbbbb; margin: 0 6px; text-decoration: none;"></a>`
         ).join('\n');
         
         imageAreaHTML = `
 <div style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; width: 100%; max-width: 360px; margin: 0 auto; border-radius: 8px;">
 ${slidesHTML}
 </div>
-<div style="text-align: center; margin-top: 8px;">
+<div style="text-align: center; margin-top: 12px;">
 ${dotsHTML}
 </div>
-<p style="font-size: 11px; color: #888888; text-align: center; margin: 4px 0 0 0; letter-spacing: 0.05em;">※スマホはスワイプ、PCは●をクリック</p>
 `;
     }
 
-    // 完璧に動作したインラインベースコードに流し込み
     const code = `<div class="custom-font" style="max-width: 900px; margin: 30px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 20px; box-sizing: border-box;">
 <div class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-6" style="align-items: center; display: flex; flex-wrap: wrap;">
 <div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5" style="box-sizing: border-box; text-align: center; flex: 1 1 340px; max-width: 100%;">
