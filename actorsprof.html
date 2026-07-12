@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【黒ボタン統一版】プロフィールHTMLジェネレーター</title>
+    <title>【MUIネイティブ版】プロフィールジェネレーター</title>
 </head>
 <body style="font-family: sans-serif; background-color: #f4f5f7; padding: 20px; color: #333333; margin: 0;">
 
 <div style="max-width: 750px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); box-sizing: border-box;">
     
-    <h1 style="font-size: 20px; margin: 0 0 5px 0; border-bottom: 2px solid #111111; padding-bottom: 10px;">【黒ボタン統一版】プロフィールHTMLジェネレーター</h1>
+    <h1 style="font-size: 20px; margin: 0 0 5px 0; border-bottom: 2px solid #111111; padding-bottom: 10px;">【MUIネイティブ版】プロフィールジェネレーター</h1>
     <div style="font-size: 12px; color: #666666; margin-bottom: 20px; line-height: 1.5;">
-        ※SNSリンクをすべて「黒ボタン」に統一し、YouTubeなどの公式表記を正確に反映しました。<br>
-        ※画像URLを改行して複数入れると、インラインCSSの力で「横スワイプギャラリー」になります。
+        ※インラインstyleを完全排除し、サイトの「MUIクラス」と「公式Swiperクラス」だけで動作させます。<br>
+        ※これでPCの巨大化やボタン消失を防ぎ、公式カルーセルが発動します。
     </div>
     
     <label style="display: block; margin-top: 15px; font-weight: bold; font-size: 14px; color: #111111;">宣材写真の画像URL（複数ある場合は改行して入力）</label>
@@ -60,7 +60,11 @@ function generateHTML() {
     let appealHTML = '';
     appealLines.forEach((line, index) => {
         if (line !== '') {
-            appealHTML += `<p style="margin: 0 0 8px 0;">${line}</p>\n`;
+            if (index === appealLines.length - 1) {
+                appealHTML += `<p class="MuiTypography-root MuiTypography-body1"><b>${line}</b></p>\n`;
+            } else {
+                appealHTML += `<p class="MuiTypography-root MuiTypography-body1">${line}</p>\n`;
+            }
         }
     });
 
@@ -68,61 +72,72 @@ function generateHTML() {
         return url && url !== 'なし' && url !== 'none' && url !== '無し';
     }
 
-    // ボタンの生成（黒ボタン構造・公式表記に修正）
+    // SNSボタンの生成 (MUIの黒ボタンクラスを適用)
     let buttons = [];
-    const btnStyle = "text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 12px 0; border-radius: 0px; letter-spacing: 0.15em; background-color: #111111; color: #ffffff; font-size: 13px; border: 1px solid #111111; box-sizing: border-box;";
+    const btnClass = "MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-fullWidth";
     
-    if (isValid(instaUrl)) buttons.push(`<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="${btnStyle}" href="${instaUrl}" target="_blank" rel="noopener">Instagram</a>`);
-    if (isValid(twitterUrl)) buttons.push(`<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="${btnStyle}" href="${twitterUrl}" target="_blank" rel="noopener">X (Twitter)</a>`);
-    if (isValid(tiktokUrl)) buttons.push(`<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="${btnStyle}" href="${tiktokUrl}" target="_blank" rel="noopener">TikTok</a>`);
-    if (isValid(youtubeUrl)) buttons.push(`<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="${btnStyle}" href="${youtubeUrl}" target="_blank" rel="noopener">YouTube</a>`);
-    
-    // OFFICIAL PROFILE は白ボタン（目立たせるためこれは大文字のままにしています）
-    buttons.push(`<a class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorPrimary" style="text-decoration: none; display: block; text-align: center; font-weight: bold; padding: 12px 0; border-radius: 0px; letter-spacing: 0.1em; background-color: #ffffff; color: #111111; font-size: 12px; border: 1px solid #111111; box-sizing: border-box;" href="${profileUrl}" target="_blank" rel="noopener">OFFICIAL PROFILE</a>`);
+    // <p>タグで囲むことでstyleを使わずに自然な縦の余白を生成します
+    if (isValid(instaUrl)) buttons.push(`<p><a class="${btnClass}" href="${instaUrl}" target="_blank" rel="noopener">Instagram</a></p>`);
+    if (isValid(twitterUrl)) buttons.push(`<p><a class="${btnClass}" href="${twitterUrl}" target="_blank" rel="noopener">X (Twitter)</a></p>`);
+    if (isValid(tiktokUrl)) buttons.push(`<p><a class="${btnClass}" href="${tiktokUrl}" target="_blank" rel="noopener">TikTok</a></p>`);
+    if (isValid(youtubeUrl)) buttons.push(`<p><a class="${btnClass}" href="${youtubeUrl}" target="_blank" rel="noopener">YouTube</a></p>`);
 
-    // 画像エリアの生成（スワイプカルーセル対応）
+    const whiteBtnClass = "MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-fullWidth";
+    buttons.push(`<p><a class="${whiteBtnClass}" href="${profileUrl}" target="_blank" rel="noopener">OFFICIAL PROFILE</a></p>`);
+
+
+    // ▼ カルーセル画像エリアの構築（送っていただいた公式コードを完全再現）▼
     let imageAreaHTML = '';
-    const baseImgStyle = "width: 100%; max-width: 360px; height: auto; display: block; object-fit: cover; margin: 0 auto 0 auto;";
-
+    
     if (imgUrls.length === 1) {
-        // 1枚のみ
-        imageAreaHTML = `<img style="${baseImgStyle}" src="${imgUrls[0]}" alt="${name}">`;
+        // 1枚のみの場合はシンプルな画像タグ
+        imageAreaHTML = `<img class="BasicImage-image TopBanner-imageBanner css-1u0xzld" width="100%" src="${imgUrls[0]}" alt="${name}">`;
     } else {
-        // 複数枚（インラインCSSによる横スクロールスナップ）
+        // 複数枚の場合は公式のSwiper構造を完全再現
         const slidesHTML = imgUrls.map(url => 
-            `<img style="flex: 0 0 100%; width: 100%; max-width: 360px; height: auto; display: block; object-fit: cover; scroll-snap-align: start; margin: 0 auto;" src="${url}" alt="${name}">`
+            `<div class="swiper-slide TopBanner-bannerCarouselItem">\n<img class="BasicImage-image TopBanner-imageBanner css-1u0xzld" width="100%" src="${url}" alt="${name}">\n</div>`
         ).join('\n');
         
+        // サイトのJSが自動検知してスライダー化するように、Swiperのベースクラスとページネーション（ドット）を組み込みます
         imageAreaHTML = `
-<div style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; width: 100%; max-width: 360px; margin: 0 auto; border-radius: 8px;">
+<div class="TopBanner-container MuiBox-root css-1qut70t">
+<div class="CustomCarousel-root MuiBox-root css-jc2jgp">
+<div class="swiper swiper-horizontal swiper-autoheight">
+<div class="swiper-wrapper">
 ${slidesHTML}
 </div>
-<p style="font-size: 11px; color: #888888; text-align: center; margin: 8px 0 0 0; letter-spacing: 0.05em;">⇄ スワイプで写真を見る</p>
-`;
+<div class="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal"></div>
+</div>
+</div>
+</div>`;
     }
 
-    // ベースコードに流し込み
-    const code = `<div class="custom-font" style="max-width: 900px; margin: 30px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 20px; box-sizing: border-box;">
-<div class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-6" style="align-items: center; display: flex; flex-wrap: wrap;">
-<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5" style="box-sizing: border-box; text-align: center; flex: 1 1 340px; max-width: 100%;">
+    // ▼ 完全に style="" を排除した究極のMUIネイティブコード ▼
+    const code = `<div class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation3 MuiPaper-rounded">
+<br>
+<div class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-4">
+<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5">
+<center>
 ${imageAreaHTML}
+</center>
 </div>
-<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-7" style="box-sizing: border-box; padding: 20px; flex: 1 1 400px; max-width: 100%;">
-<div style="margin-bottom: 24px; border-bottom: 2px solid #111111; padding-bottom: 15px;">
-<h1 style="margin: 0 0 4px 0; font-size: 36px; font-weight: bold; color: #111111; letter-spacing: 0.05em;">${name}</h1>
-<p style="margin: 0; font-size: 13px; color: #666666; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase;">${roma}</p>
-</div>
-<div style="font-size: 15px; color: #111111; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; line-height: 1.6; font-weight: 500;">
-<div><span style="color: #666666; display: inline-block; width: 110px;">誕生日 ／</span>${birthday}</div>
-</div>
-<div style="font-size: 14px; line-height: 1.8; color: #333333; margin-bottom: 30px; border-top: 1px solid #e0e0e0; padding-top: 20px; box-sizing: border-box;">
-<p style="margin: 0 0 10px 0; font-weight: bold; font-size: 15px; color: #111111; letter-spacing: 0.05em;">【アピールポイント】</p>
-${appealHTML}</div>
-<div style="display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 280px;">
+<div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-7">
+<h1 class="MuiTypography-root MuiTypography-h4">${name}</h1>
+<p class="MuiTypography-root MuiTypography-subtitle1 MuiTypography-colorTextSecondary">${roma}</p>
+
+<hr class="MuiDivider-root">
+<p class="MuiTypography-root MuiTypography-body1"><b>誕生日 ／</b> ${birthday}</p>
+
+<hr class="MuiDivider-root">
+<p class="MuiTypography-root MuiTypography-subtitle2"><b>【アピールポイント】</b></p>
+${appealHTML}
+<br>
+
 ${buttons.join('\n')}
+
 </div>
 </div>
-</div>
+<br>
 </div>`;
 
     document.getElementById('output').value = code;
