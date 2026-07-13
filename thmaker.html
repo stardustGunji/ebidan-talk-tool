@@ -49,38 +49,7 @@
     </div>
 
     <script>
-        const SECRET_PASS = "0717"; // パスワード
-        const userInput = prompt("パスワードを入力してください");
-        
-        if (userInput === SECRET_PASS) {
-            // パスワードが合っていたらツールを表示する！
-            document.getElementById('app-container').style.display = 'block';
-        } else {
-            // 間違っていたら真っ白な画面にメッセージだけ出す
-            alert("パスワードが違います。");
-            document.body.innerHTML = "<h3 style='margin-top: 50px; color: #333;'>アクセスが制限されています</h3>";
-        }
-    </script>
-
-    <script>
-        // パスワードが合っていた時だけ下の処理が正しく動くようにします
-        if (document.getElementById('app-container')) {
-            const canvas = document.getElementById('myCanvas');
-            const ctx = canvas.getContext('2d');
-            const bgSelect = document.getElementById('bgSelect');
-            const categorySelect = document.getElementById('categorySelect');
-            const textInput = document.getElementById('newsText');
-            const downloadBtn = document.getElementById('downloadBtn');
-
-            let baseImage = new Image();
-
-            function loadBackgroundImage() {
-                baseImage.src = bgSelect.value;
-                baseImage.onload = () => {
-                    draw();
-                };
-            }
-
+ 
             bgSelect.addEventListener('change', loadBackgroundImage);
             categorySelect.addEventListener('change', draw);
             textInput.addEventListener('input', draw);
