@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サムネイルジェネレーター v2.5（ロック付き）</title>
+    <title>サムネイルジェネレーター v2.3</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f0f0f0; }
-        /* ⚠️ ツール全体を最初は非表示にする設定を追加 */
-        #app-container { display: none; }
-        
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .controls { margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; align-items: center; }
         select, input[type="text"] { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
@@ -20,73 +17,96 @@
     </style>
 </head>
 <body>
-    
-    <div id="app-container">
-        <div class="container">
-            <h2>ニュースサムネイル生成ツール v2.5</h2>
-            <p>EVENTとSPECIALは金！</p>
-            <div class="controls">
-                <select id="bgSelect">
-                    <option value="template2.png">背景: ネイビー</option>
-                    <option value="templatewh2.png">背景: ホワイト</option>
-                </select>
-                
-                <select id="categorySelect">
-                    <option value="NEWS">NEWS</option>
-                    <option value="EVENT">EVENT</option>
-                    <option value="MOVIE">MOVIE</option>
-                    <option value="SPECIAL">SPECIAL</option>
-                    <option value="OTHER">OTHER</option>
-                </select>
-
-                <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="EBiDAN ACTORS OFFICIAL SITE オープン！">
-                <button id="downloadBtn">画像をダウンロード</button>
-            </div>
+    <div class="container">
+        <h2>ニュースサムネイル生成ツール v2.3</h2>
+        <div class="controls">
+            <select id="bgSelect">
+                <option value="template2.png">背景: ネイビー</option>
+                <option value="templatewh2.png">背景: ホワイト</option>
+            </select>
             
-            <canvas id="myCanvas" width="1920" height="1080"></canvas>
-            <p class="note">※設定を変更するとリアルタイムで画像に反映されます。</p>
+            <select id="categorySelect">
+                <option value="NEWS">NEWS</option>
+                <option value="EVENT">EVENT</option>
+                <option value="MOVIE">MOVIE</option>
+                <option value="SPECIAL">SPECIAL</option>
+                <option value="OTHER">OTHER</option>
+            </select>
+
+            <input type="text" id="newsText" placeholder="ニュースのテキストを入力" value="EBiDAN ACTORS OFFICIAL SITE オープン！">
+            <button id="downloadBtn">画像をダウンロード</button>
         </div>
+        
+        <canvas id="myCanvas" width="1920" height="1080"></canvas>
+        <p class="note">※設定を変更するとリアルタイムで画像に反映されます。</p>
     </div>
 
     <script>
- 
-            bgSelect.addEventListener('change', loadBackgroundImage);
-            categorySelect.addEventListener('change', draw);
-            textInput.addEventListener('input', draw);
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const bgSelect = document.getElementById('bgSelect');
+        const categorySelect = document.getElementById('categorySelect');
+        const textInput = document.getElementById('newsText');
+        const downloadBtn = document.getElementById('downloadBtn');
 
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+        let baseImage = new Image();
 
-                const category = categorySelect.value;
-                ctx.font = '35px "Century", sans-serif'; 
-                ctx.fillStyle = '#FFFFFF';
-                ctx.textAlign = 'center';  
-                ctx.textBaseline = 'middle'; 
-
-                const catX = 290; 
-                const catY = 875; 
-                ctx.fillText(category, catX, catY);
-
-                const text = textInput.value;
-                ctx.font = '45px "Century", sans-serif'; 
-                ctx.fillStyle = '#000022';
-                
-                const textX = 1050; 
-                const textY = 875;  
-                ctx.fillText(text, textX, textY);
-            }
-
-            downloadBtn.addEventListener('click', () => {
-                const link = document.createElement('a');
-                const bgName = bgSelect.value === 'template2.png' ? 'navy' : 'white';
-                link.download = `thumbnail_${bgName}_${categorySelect.value}_century.png`; 
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-
-            loadBackgroundImage();
+        // 背景画像を読み込む関数
+        function loadBackgroundImage() {
+            baseImage.src = bgSelect.value;
+            baseImage.onload = () => {
+                draw(); // 読み込み完了後に描画
+            };
         }
+
+        // 入力や選択が変わるたびに再描画・再読み込み
+        bgSelect.addEventListener('change', loadBackgroundImage);
+        categorySelect.addEventListener('change', draw);
+        textInput.addEventListener('input', draw);
+
+        function draw() {
+            // キャンバスをクリアして背景画像を配置
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+
+            // ------------------------------------------------
+            // 1. カテゴリ（左のゴールド枠）のテキスト描画
+            // ------------------------------------------------
+            const category = categorySelect.value;
+            // 英語優先のCenturyフォント設定
+            ctx.font = '35px "Century", sans-serif'; 
+            ctx.fillStyle = '#FFFFFF'; // 白文字
+            ctx.textAlign = 'center';  
+            ctx.textBaseline = 'middle'; 
+
+            const catX = 290; 
+            const catY = 875; 
+            ctx.fillText(category, catX, catY);
+
+            // ------------------------------------------------
+            // 2. ニュース本文（右の長い枠）のテキスト描画
+            // ------------------------------------------------
+            const text = textInput.value;
+            // 英語優先のCenturyフォント設定
+            ctx.font = '45px "Century", sans-serif'; 
+            ctx.fillStyle = '#000022'; // 紺〜黒文字
+            
+            const textX = 1050; 
+            const textY = 875;  
+            ctx.fillText(text, textX, textY);
+        }
+
+        // ダウンロード機能
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            const bgName = bgSelect.value === 'template2.png' ? 'navy' : 'white';
+            link.download = `thumbnail_${bgName}_${categorySelect.value}_century.png`; 
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // 初回読み込みを実行
+        loadBackgroundImage();
     </script>
 </body>
 </html>
