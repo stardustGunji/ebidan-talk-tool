@@ -33,13 +33,15 @@
       font-weight: bold;
       margin-bottom: 5px;
     }
-    input[type="text"] {
+    textarea {
       width: 100%;
       padding: 10px;
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
+      resize: vertical;
+      line-height: 1.5;
     }
     button {
       background-color: #4CAF50;
@@ -56,7 +58,7 @@
       background-color: #45a049;
     }
 
-    /* プレビュー領域（動画の16:9サイズを想定: 1920x1080の縮小版） */
+    /* プレビュー領域 */
     .preview-wrapper {
       width: 960px;
       height: 540px;
@@ -78,7 +80,6 @@
       left: 0;
       transform: scale(0.5);
       transform-origin: top left;
-      /* 背景を透過にするため色は指定しない */
     }
 
     /* クイズのUIデザイン */
@@ -89,7 +90,7 @@
       right: 50px;
       display: flex;
       flex-wrap: wrap;
-      gap: 15px; /* 要素の間の隙間 */
+      gap: 15px;
     }
     .quiz-box {
       display: flex;
@@ -97,7 +98,6 @@
       overflow: hidden;
       background: #fff;
       font-weight: 900;
-      /* ▼ ここが重要！枠線を含めてサイズ計算させることでレイアウト崩れを防ぎます ▼ */
       box-sizing: border-box;
     }
     .quiz-label {
@@ -119,13 +119,12 @@
       white-space: nowrap;
     }
 
-    /* 問題枠（幅100%） */
+    /* 問題枠 */
     .box-q { width: 100%; border: 8px solid #000; }
     .box-q .quiz-label { background: #000; }
     
-    /* 選択肢枠（幅を約50%にして、AとBを横に並べる） */
+    /* 選択肢枠 */
     .box-choice { width: calc(50% - 7.5px); }
-    
     .box-a { border: 8px solid #ff0000; }
     .box-a .quiz-label { background: #ff0000; }
     
@@ -139,22 +138,11 @@
 <body>
 
   <div class="container">
-    <h2>📝 クイズ内容を入力</h2>
+    <h2>📝 クイズ内容をペースト</h2>
     <div class="input-group">
-      <label>問題文</label>
-      <input type="text" id="input-q" value="「フルアウト」のタイトルを書いたのは誰でしょうか！" oninput="updatePreview()">
-    </div>
-    <div class="input-group">
-      <label>選択肢 A</label>
-      <input type="text" id="input-a" value="玉木 盛柊" oninput="updatePreview()">
-    </div>
-    <div class="input-group">
-      <label>選択肢 B</label>
-      <input type="text" id="input-b" value="西田 瑛音" oninput="updatePreview()">
-    </div>
-    <div class="input-group">
-      <label>選択肢 C</label>
-      <input type="text" id="input-c" value="守本 勝倶" oninput="updatePreview()">
+      <label>問題と選択肢（1行目が問題、2行目以降が選択肢として自動認識されます）</label>
+      <textarea id="input-text" rows="5" oninput="updatePreview()">とあのプロフィールの写真で着ている服は？
+A.シャツ B.制服風 C.つなぎ</textarea>
     </div>
     <button onclick="downloadImage()">📸 画像としてダウンロード</button>
   </div>
@@ -166,42 +154,59 @@
         <!-- 問題 -->
         <div class="quiz-box box-q">
           <div class="quiz-label">問題</div>
-          <div class="quiz-text" id="text-q">「フルアウト」のタイトルを書いたのは誰でしょうか！</div>
+          <div class="quiz-text" id="text-q">とあのプロフィールの写真で着ている服は？</div>
         </div>
         <!-- 選択肢A -->
         <div class="quiz-box box-choice box-a">
           <div class="quiz-label">A</div>
-          <div class="quiz-text" id="text-a">玉木 盛柊</div>
+          <div class="quiz-text" id="text-a">シャツ</div>
         </div>
         <!-- 選択肢B -->
         <div class="quiz-box box-choice box-b">
           <div class="quiz-label">B</div>
-          <div class="quiz-text" id="text-b">西田 瑛音</div>
+          <div class="quiz-text" id="text-b">制服風</div>
         </div>
         <!-- 選択肢C -->
         <div class="quiz-box box-choice box-c">
           <div class="quiz-label">C</div>
-          <div class="quiz-text" id="text-c">守本 勝倶</div>
+          <div class="quiz-text" id="text-c">つなぎ</div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // 入力内容をリアルタイムでプレビューに反映
+    // 入力内容を自動で解析してプレビューに反映
     function updatePreview() {
-      document.getElementById('text-q').textContent = document.getElementById('input-q').value;
-      document.getElementById('text-a').textContent = document.getElementById('input-a').value;
-      document.getElementById('text-b').textContent = document.getElementById('input-b').value;
-      document.getElementById('text-c').textContent = document.getElementById('input-c').value;
+      const inputText = document.getElementById('input-text').value.trim();
+      const lines = inputText.split('\n');
+      
+      // 1行目を問題文にセット
+      document.getElementById('text-q').textContent = lines[0] || '';
+      
+      // 2行目以降の文字列を結合
+      const choicesText = lines.slice(1).join(' ');
+      
+      // 「A.」「B.」「C.」（半角・全角対応）を探して文字を抽出する正規表現
+      const matchA = choicesText.match(/[AＡ][.．](.*?)(?=[BＢ][.．]|$)/);
+      const matchB = choicesText.match(/[BＢ][.．](.*?)(?=[CＣ][.．]|$)/);
+      const matchC = choicesText.match(/[CＣ][.．](.*)/);
+      
+      // 抽出した文字をそれぞれの枠にセット（見つからなかった場合は空にする）
+      document.getElementById('text-a').textContent = matchA ? matchA[1].trim() : '';
+      document.getElementById('text-b').textContent = matchB ? matchB[1].trim() : '';
+      document.getElementById('text-c').textContent = matchC ? matchC[1].trim() : '';
     }
+
+    // 読み込み時に一度実行して初期値を反映させる
+    window.onload = updatePreview;
 
     // html2canvasを使って画像を生成・ダウンロード
     function downloadImage() {
       const captureArea = document.getElementById('capture-area');
       
       html2canvas(captureArea, {
-        backgroundColor: null, // 背景を透過する
+        backgroundColor: null,
         scale: 1 // 1920x1080の等倍サイズで出力
       }).then(canvas => {
         const link = document.createElement('a');
