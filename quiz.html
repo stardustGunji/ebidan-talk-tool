@@ -89,7 +89,7 @@
       right: 50px;
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 15px; /* 要素の間の隙間 */
     }
     .quiz-box {
       display: flex;
@@ -97,7 +97,8 @@
       overflow: hidden;
       background: #fff;
       font-weight: 900;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      /* ▼ ここが重要！枠線を含めてサイズ計算させることでレイアウト崩れを防ぎます ▼ */
+      box-sizing: border-box;
     }
     .quiz-label {
       color: #fff;
@@ -118,12 +119,13 @@
       white-space: nowrap;
     }
 
-    /* 問題枠 */
+    /* 問題枠（幅100%） */
     .box-q { width: 100%; border: 8px solid #000; }
     .box-q .quiz-label { background: #000; }
     
-    /* 選択肢枠 */
+    /* 選択肢枠（幅を約50%にして、AとBを横に並べる） */
     .box-choice { width: calc(50% - 7.5px); }
+    
     .box-a { border: 8px solid #ff0000; }
     .box-a .quiz-label { background: #ff0000; }
     
