@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クイズ画像ジェネレーター</title>
+  <!-- 画像化のためのライブラリを読み込み -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* プレビュー領域（動画の16:9サイズを想定: 1920x1080の縮小版） */
+    .preview-wrapper {
+      width: 960px;
+      height: 540px;
+      position: relative;
+      background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),
+        linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      border: 1px solid #999;
+      overflow: hidden;
+    }
+    
+    #capture-area {
+      width: 1920px;
+      height: 1080px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: scale(0.5);
+      transform-origin: top left;
+      /* 背景を透過にするため色は指定しない */
+    }
+
+    /* クイズのUIデザイン */
+    .quiz-container {
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      right: 50px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .quiz-box {
+      display: flex;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+      font-weight: 900;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .quiz-label {
+      color: #fff;
+      padding: 10px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+    }
+    .quiz-text {
+      flex: 1;
+      padding: 10px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 55px;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    /* 問題枠 */
+    .box-q { width: 100%; border: 8px solid #000; }
+    .box-q .quiz-label { background: #000; }
+    
+    /* 選択肢枠 */
+    .box-choice { width: calc(50% - 7.5px); }
+    .box-a { border: 8px solid #ff0000; }
+    .box-a .quiz-label { background: #ff0000; }
+    
+    .box-b { border: 8px solid #0000ff; }
+    .box-b .quiz-label { background: #0000ff; }
+    
+    .box-c { border: 8px solid #00a000; }
+    .box-c .quiz-label { background: #00a000; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>📝 クイズ内容を入力</h2>
+    <div class="input-group">
+      <label>問題文</label>
+      <input type="text" id="input-q" value="「フルアウト」のタイトルを書いたのは誰でしょうか！" oninput="updatePreview()">
+    </div>
+    <div class="input-group">
+      <label>選択肢 A</label>
+      <input type="text" id="input-a" value="玉木 盛柊" oninput="updatePreview()">
+    </div>
+    <div class="input-group">
+      <label>選択肢 B</label>
+      <input type="text" id="input-b" value="西田 瑛音" oninput="updatePreview()">
+    </div>
+    <div class="input-group">
+      <label>選択肢 C</label>
+      <input type="text" id="input-c" value="守本 勝倶" oninput="updatePreview()">
+    </div>
+    <button onclick="downloadImage()">📸 画像としてダウンロード</button>
+  </div>
+
+  <!-- プレビューと画像化の対象エリア -->
+  <div class="preview-wrapper">
+    <div id="capture-area">
+      <div class="quiz-container">
+        <!-- 問題 -->
+        <div class="quiz-box box-q">
+          <div class="quiz-label">問題</div>
+          <div class="quiz-text" id="text-q">「フルアウト」のタイトルを書いたのは誰でしょうか！</div>
+        </div>
+        <!-- 選択肢A -->
+        <div class="quiz-box box-choice box-a">
+          <div class="quiz-label">A</div>
+          <div class="quiz-text" id="text-a">玉木 盛柊</div>
+        </div>
+        <!-- 選択肢B -->
+        <div class="quiz-box box-choice box-b">
+          <div class="quiz-label">B</div>
+          <div class="quiz-text" id="text-b">西田 瑛音</div>
+        </div>
+        <!-- 選択肢C -->
+        <div class="quiz-box box-choice box-c">
+          <div class="quiz-label">C</div>
+          <div class="quiz-text" id="text-c">守本 勝倶</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 入力内容をリアルタイムでプレビューに反映
+    function updatePreview() {
+      document.getElementById('text-q').textContent = document.getElementById('input-q').value;
+      document.getElementById('text-a').textContent = document.getElementById('input-a').value;
+      document.getElementById('text-b').textContent = document.getElementById('input-b').value;
+      document.getElementById('text-c').textContent = document.getElementById('input-c').value;
+    }
+
+    // html2canvasを使って画像を生成・ダウンロード
+    function downloadImage() {
+      const captureArea = document.getElementById('capture-area');
+      
+      html2canvas(captureArea, {
+        backgroundColor: null, // 背景を透過する
+        scale: 1 // 1920x1080の等倍サイズで出力
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'quiz_image.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
+
+</body>
+</html>
