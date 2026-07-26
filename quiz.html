@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>クイズ画像ジェネレーター</title>
+  <title>クイズ画像ジェネレーター2</title>
   <!-- 画像化のためのライブラリを読み込み -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
@@ -107,21 +107,26 @@
       align-items: center;
       justify-content: center;
       font-size: 50px;
+      flex-shrink: 0; /* ラベル部分が潰れないように設定 */
     }
     .quiz-text {
       flex: 1;
-      padding: 10px 30px;
+      padding: 15px 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 55px;
+      font-size: 50px;
       color: #000;
-      white-space: nowrap;
+      text-align: center;
+      line-height: 1.2;
+      /* ▼ 改行を許可し、入力欄の改行をそのまま反映させる ▼ */
+      white-space: pre-wrap; 
     }
 
     /* 問題枠 */
     .box-q { width: 100%; border: 8px solid #000; }
     .box-q .quiz-label { background: #000; }
+    .box-q .quiz-text { font-size: 45px; } /* 問題文は2行になることを想定して少し小さく */
     
     /* 選択肢枠 */
     .box-choice { width: calc(50% - 7.5px); }
@@ -140,9 +145,10 @@
   <div class="container">
     <h2>📝 クイズ内容をペースト</h2>
     <div class="input-group">
-      <label>問題と選択肢（1行目が問題、2行目以降が選択肢として自動認識されます）</label>
-      <textarea id="input-text" rows="5" oninput="updatePreview()">とあのプロフィールの写真で着ている服は？
-A.シャツ B.制服風 C.つなぎ</textarea>
+      <label>問題と選択肢（「A.」が出てくるまでを問題文として自動認識します）</label>
+      <textarea id="input-text" rows="5" oninput="updatePreview()">まうなのプロフィールに書いてある特技は、
+フィンスイミング・テニス・水泳 あとひとつは？
+A.ものまね B.食レポ C.逆立ち</textarea>
     </div>
     <button onclick="downloadImage()">📸 画像としてダウンロード</button>
   </div>
@@ -154,22 +160,22 @@ A.シャツ B.制服風 C.つなぎ</textarea>
         <!-- 問題 -->
         <div class="quiz-box box-q">
           <div class="quiz-label">問題</div>
-          <div class="quiz-text" id="text-q">とあのプロフィールの写真で着ている服は？</div>
+          <div class="quiz-text" id="text-q"></div>
         </div>
         <!-- 選択肢A -->
         <div class="quiz-box box-choice box-a">
           <div class="quiz-label">A</div>
-          <div class="quiz-text" id="text-a">シャツ</div>
+          <div class="quiz-text" id="text-a"></div>
         </div>
         <!-- 選択肢B -->
         <div class="quiz-box box-choice box-b">
           <div class="quiz-label">B</div>
-          <div class="quiz-text" id="text-b">制服風</div>
+          <div class="quiz-text" id="text-b"></div>
         </div>
         <!-- 選択肢C -->
         <div class="quiz-box box-choice box-c">
           <div class="quiz-label">C</div>
-          <div class="quiz-text" id="text-c">つなぎ</div>
+          <div class="quiz-text" id="text-c"></div>
         </div>
       </div>
     </div>
@@ -178,21 +184,35 @@ A.シャツ B.制服風 C.つなぎ</textarea>
   <script>
     // 入力内容を自動で解析してプレビューに反映
     function updatePreview() {
-      const inputText = document.getElementById('input-text').value.trim();
+      const inputText = document.getElementById('input-text').value;
       const lines = inputText.split('\n');
       
-      // 1行目を問題文にセット
-      document.getElementById('text-q').textContent = lines[0] || '';
+      let questionLines = [];
+      let choicesText = "";
+      let foundChoices = false;
+
+      // 「A.」や「A．」が含まれる行以降を選択肢として扱う処理
+      for (let i = 0; i < lines.length; i++) {
+        if (!foundChoices && lines[i].match(/[AＡ][.．]/)) {
+          foundChoices = true;
+        }
+        
+        if (foundChoices) {
+          choicesText += lines[i] + " ";
+        } else {
+          questionLines.push(lines[i]);
+        }
+      }
       
-      // 2行目以降の文字列を結合
-      const choicesText = lines.slice(1).join(' ');
+      // 問題文をセット（配列を改行コードで結合）
+      document.getElementById('text-q').textContent = questionLines.join('\n').trim();
       
       // 「A.」「B.」「C.」（半角・全角対応）を探して文字を抽出する正規表現
       const matchA = choicesText.match(/[AＡ][.．](.*?)(?=[BＢ][.．]|$)/);
       const matchB = choicesText.match(/[BＢ][.．](.*?)(?=[CＣ][.．]|$)/);
       const matchC = choicesText.match(/[CＣ][.．](.*)/);
       
-      // 抽出した文字をそれぞれの枠にセット（見つからなかった場合は空にする）
+      // 抽出した文字をそれぞれの枠にセット
       document.getElementById('text-a').textContent = matchA ? matchA[1].trim() : '';
       document.getElementById('text-b').textContent = matchB ? matchB[1].trim() : '';
       document.getElementById('text-c').textContent = matchC ? matchC[1].trim() : '';
